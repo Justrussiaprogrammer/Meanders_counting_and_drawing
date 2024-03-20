@@ -1,24 +1,71 @@
-#include <iostream>
-#include <vector>
-#include <set>
+#include "functions.h"
 #include <chrono>
 #include <string>
 
-void go_deep_to_build(int n, int is_even, std::set<int> visited, std::vector<std::set<int> > neighs, std::vector<int>sequence) {
-    return;
+size_t global_answer = 0;
+
+
+void go_deep_to_build(int n, int is_even, std::set<int> &visited, std::vector<std::set<int> > &neighs,
+ std::vector<int> &sequence) {
+    if (visited.size() == n) {
+        ++global_answer;
+        std::cout << "Найдена комбинация номер " << global_answer << ": ";
+        for (int elem : sequence) {
+            std::cout << elem << ", ";
+        }
+        std::cout << std::endl;
+        for (int i = 0; i < n; ++i) {
+            std::cout << '-';
+        }
+        std::cout << std::endl;
+        return;
+    }
+    for (int i = is_even; i < n + 1; i += 2) {
+        if (visited.find(i) == visited.end()) {
+            for (int j = i + 1; j < n + 1; ++j) {
+                if (visited.find(j) == visited.end()) {
+                    neighs[i].insert(j);
+                    neighs[j].insert(i);
+                }
+            }
+            if (!check_noted(n, i, visited, neighs)) {
+                for (int j = i + 1; j < n + 1; ++j) {
+                    if (visited.find(j) == visited.end()) {
+                        neighs[i].erase(j);
+                        neighs[j].erase(i);
+                    }
+                }
+                continue;
+            }
+                
+            visited.insert(i);
+
+            sequence[visited.size() - 1] = i;
+            go_deep_to_build(n, 3 - is_even, visited, neighs, sequence);
+            sequence[visited.size() - 1] = i;
+
+            for (int j = i + 1; j < n + 1; ++j) {
+                if (visited.find(j) == visited.end()) {
+                    neighs[i].erase(j);
+                    neighs[j].erase(i);
+                }
+            }
+
+            visited.erase(i);
+        }
+    }
 }
 
-size_t global_answer = 0;
 
 int main() {
     int x;
 
+    std::cout << "Задайте размер поиска меандров:" << std::endl;
+
     std::cin >> x;
     std::vector<std::set<int> > X_all(x + 1);
     std::set<int> empty_set;
-    std::vector<int> empty_vector;
-
-    std::cout << "Задайте размер поиска меандров:" << std::endl;
+    std::vector<int> empty_vector(x);
 
     auto start_point = std::chrono::system_clock::now();
     go_deep_to_build(x, 1, empty_set, X_all, empty_vector);

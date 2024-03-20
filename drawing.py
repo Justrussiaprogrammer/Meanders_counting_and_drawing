@@ -9,7 +9,7 @@ if text.lower() == 'f':
     f = open('123.txt', 'w')
     sys.stdout = f
 
-combination = [7, 6, 5, 4, 3, 2, 1, 8]
+combination = [1, 8, 3, 4, 7, 6, 5, 2, 9, 12, 13, 14, 11, 10, 15, 16]
 n = len(combination)
 
 

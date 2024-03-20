@@ -39,7 +39,7 @@ X_all = list()
 for i in range(x + 1):
     X_all.append(set())
 
-go_deep_to_build(x,1, set([]), X_all, list())
+go_deep_to_build(x, 1, set([]), X_all, list())
 string_for_meanders1 = "найден"
 string_for_meanders2 = "меандр"
 if global_answer % 10 > 4 or (4 < global_answer % 100 < 21):

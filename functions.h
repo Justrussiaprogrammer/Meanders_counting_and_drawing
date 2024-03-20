@@ -3,21 +3,24 @@
 #include <set>
 #include <vector>
 
-bool check_noted(int n, int pos, std::set<int> visited, std::vector<std::set<int> > neighs) {
-    for (int x : visited) {
-        if (neighs[pos].find(x) != neighs[pos].end()) {
-            std::set<int> intersect_example;
-            std::set_intersection(neighs[pos].begin(), neighs[pos].end(), neighs[x].begin(), neighs[x].end(),
-             std::inserter(intersect_example, intersect_example.begin()));
-            if (intersect_example.size() % 2 != 0) {
-                return false;
+bool check_noted(int n, int pos, const std::vector<int> &visited, const std::vector<std::vector<int> > &neighs) {
+    for (int i = 1; i < n + 1; ++i) {
+        if (visited[i] == 1) {
+            int count = 0;
+            for (int j = 1; j < n + 1; ++j) {
+                if (neighs[pos][j] == 1 && neighs[i][j] == 1) {
+                    ++count;
+                }
             }
-        } else {
-            std::set<int> intersect_example;
-            std::set_intersection(neighs[pos].begin(), neighs[pos].end(), neighs[x].begin(), neighs[x].end(),
-             std::inserter(intersect_example, intersect_example.begin()));
-            if (intersect_example.size() % 2 != 1) {
-                return false;
+
+            if (neighs[pos][i] == 1) {
+                if (count % 2 != 0) {
+                    return false;
+                }
+            } else {
+                if (count % 2 != 1) {
+                    return false;
+                }
             }
         }
     }

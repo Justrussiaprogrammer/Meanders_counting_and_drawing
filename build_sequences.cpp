@@ -1,57 +1,57 @@
 #include "functions.h"
 #include <chrono>
 #include <string>
+#include <stdio.h>
 
-size_t global_answer = 0;
+int global_answer = 0;
 
 
-void go_deep_to_build(int n, int is_even, std::set<int> &visited, std::vector<std::set<int> > &neighs,
- std::vector<int> &sequence) {
-    if (visited.size() == n) {
+void go_deep_to_build(int n, int is_even, std::vector<int> &visited, std::vector<std::vector<int> > &neighs,
+ std::vector<int> &sequence, int step) {
+    if (step == n) {
         ++global_answer;
-        std::cout << "Найдена комбинация номер " << global_answer << ": ";
+        printf("Найдена комбинация номер %d: ", global_answer);
         for (int elem : sequence) {
-            std::cout << elem << ", ";
+            printf("%d, ", elem);
         }
-        std::cout << std::endl;
+        printf("\n");
         for (int i = 0; i < n; ++i) {
-            std::cout << '-';
+            printf("-");
         }
-        std::cout << std::endl;
+        printf("\n");
         return;
     }
     for (int i = is_even; i < n + 1; i += 2) {
-        if (visited.find(i) == visited.end()) {
+        if (visited[i] == 0) {
             for (int j = i + 1; j < n + 1; ++j) {
-                if (visited.find(j) == visited.end()) {
-                    neighs[i].insert(j);
-                    neighs[j].insert(i);
+                if (visited[j] == 0) {
+                    neighs[i][j] = 1;
+                    neighs[j][i] = 1;
                 }
             }
             if (!check_noted(n, i, visited, neighs)) {
                 for (int j = i + 1; j < n + 1; ++j) {
-                    if (visited.find(j) == visited.end()) {
-                        neighs[i].erase(j);
-                        neighs[j].erase(i);
+                    if (visited[j] == 0) {
+                        neighs[i][j] = 0;
+                        neighs[j][i] = 0;
                     }
                 }
                 continue;
             }
                 
-            visited.insert(i);
+            visited[i] = 1;
 
-            sequence[visited.size() - 1] = i;
-            go_deep_to_build(n, 3 - is_even, visited, neighs, sequence);
-            sequence[visited.size() - 1] = i;
+            sequence[step] = i;
+            go_deep_to_build(n, 3 - is_even, visited, neighs, sequence, step + 1);
 
             for (int j = i + 1; j < n + 1; ++j) {
-                if (visited.find(j) == visited.end()) {
-                    neighs[i].erase(j);
-                    neighs[j].erase(i);
+                if (visited[j] == 0) {
+                    neighs[i][j] = 0;
+                    neighs[j][i] = 0;
                 }
             }
 
-            visited.erase(i);
+            visited[i] = 0;
         }
     }
 }
@@ -63,12 +63,19 @@ int main() {
     std::cout << "Задайте размер поиска меандров:" << std::endl;
 
     std::cin >> x;
-    std::vector<std::set<int> > X_all(x + 1);
-    std::set<int> empty_set;
+    std::vector<std::vector<int> > X_all(x + 1);
+
+    for (int i = 0; i < x + 1; ++i) {
+        for (int j = 0; j < x + 1; ++j) {
+            X_all[i].push_back(0);
+        }
+    }
+
+    std::vector<int> empty_visited(x + 1);
     std::vector<int> empty_vector(x);
 
     auto start_point = std::chrono::system_clock::now();
-    go_deep_to_build(x, 1, empty_set, X_all, empty_vector);
+    go_deep_to_build(x, 1, empty_visited, X_all, empty_vector, 0);
     std::string string_for_meanders1 = " найден ";
     std::string string_for_meanders2 = " меандр";
     if (global_answer % 10 > 4 || (4 < global_answer % 100 && global_answer % 100 < 21) || global_answer == 0) {

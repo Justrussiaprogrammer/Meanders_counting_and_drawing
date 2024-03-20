@@ -1,26 +1,5 @@
 import time
-
-
-def get_count_neighbours(n, pos, visited, neighs):
-    answer = len(neighs[pos])
-    for i in range(pos + 1, n + 1):
-        if i not in visited:
-            answer += 1
-
-    return answer
-
-
-def check_noted(n, pos, visited, neighs):
-    for x in visited:
-        if x in neighs[pos]:
-            union = neighs[pos] | neighs[x]
-            if len(union) % 2 != 0:
-                return False
-        else:
-            union = neighs[pos] | neighs[x]
-            if len(union) % 2 != 1:
-                return False
-    return True
+import functions
 
 
 def go_deep_to_build(n, is_even, visited, neighs, to_answer):
@@ -36,7 +15,7 @@ def go_deep_to_build(n, is_even, visited, neighs, to_answer):
                 if j not in visited:
                     neighs[i].add(j)
                     neighs[j].add(i)
-            if not check_noted(n, i, visited, neighs):
+            if not functions.check_noted(n, i, visited, neighs):
                 for j in range(i + 1, n + 1):
                     if j not in visited:
                         neighs[i].remove(j)

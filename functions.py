@@ -1,3 +1,25 @@
+def get_count_neighbours(n, pos, visited, neighs):
+    answer = len(neighs[pos])
+    for i in range(pos + 1, n + 1):
+        if i not in visited:
+            answer += 1
+
+    return answer
+
+
+def check_noted(n, pos, visited, neighs):
+    for x in visited:
+        if x in neighs[pos]:
+            union = neighs[pos] | neighs[x]
+            if len(union) % 2 != 0:
+                return False
+        else:
+            union = neighs[pos] | neighs[x]
+            if len(union) % 2 != 1:
+                return False
+    return True
+
+
 def print_screen(arr):
     for word in arr:
         print(word)

@@ -15,5 +15,5 @@ def print_meanders(combination):
     plt.show()
 
 
-combination = [1, 8, 3, 4, 7, 6, 5, 2, 9, 10, 15, 14, 13, 11, 12, 16]
+combination = [5, 4, 3, 2, 1, 6]
 print_meanders(combination)

@@ -21,10 +21,10 @@ int main() {
     std::cout << "Задайте размер поиска меандров:" << std::endl;
 
     auto start_point = std::chrono::system_clock::now();
-    go_deep_to_build(x,1, empty_set, X_all, empty_vector);
+    go_deep_to_build(x, 1, empty_set, X_all, empty_vector);
     std::string string_for_meanders1 = " найден ";
     std::string string_for_meanders2 = " меандр";
-    if (global_answer % 10 > 4 || (4 < global_answer % 100 && global_answer % 100 < 21)) {
+    if (global_answer % 10 > 4 || (4 < global_answer % 100 && global_answer % 100 < 21) || global_answer == 0) {
         string_for_meanders1 = " найдено ";
         string_for_meanders2 = " меандров";
     } else if (global_answer % 10 > 1) {

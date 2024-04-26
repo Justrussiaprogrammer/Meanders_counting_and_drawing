@@ -10,15 +10,15 @@ void go_deep_to_build(int n, int is_even, std::vector<int> &visited, std::vector
  std::vector<int> &sequence, int step) {
     if (step == n) {
         ++global_answer;
-        printf("Найдена комбинация номер %d: ", global_answer);
-        for (int elem : sequence) {
-            printf("%d, ", elem);
-        }
-        printf("\n");
-        for (int i = 0; i < n; ++i) {
-            printf("-");
-        }
-        printf("\n");
+        // printf("Найдена комбинация номер %d: ", global_answer);
+        // for (int elem : sequence) {
+        //     printf("%d, ", elem);
+        // }
+        // printf("\n");
+        // for (int i = 0; i < n; ++i) {
+        //     printf("-");
+        // }
+        // printf("\n");
         return;
     }
     for (int i = is_even; i < n + 1; i += 2) {
@@ -78,7 +78,7 @@ int main() {
     go_deep_to_build(x, 1, empty_visited, X_all, empty_vector, 0);
     std::string string_for_meanders1 = " найден ";
     std::string string_for_meanders2 = " меандр";
-    if (global_answer % 10 > 4 || (4 < global_answer % 100 && global_answer % 100 < 21) || global_answer == 0) {
+    if (global_answer % 10 > 4 || (4 < global_answer % 100 && global_answer % 100 < 21) || global_answer % 10 == 0) {
         string_for_meanders1 = " найдено ";
         string_for_meanders2 = " меандров";
     } else if (global_answer % 10 > 1) {

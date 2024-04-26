@@ -6,8 +6,8 @@ def go_deep_to_build(n, is_even, visited, neighs, to_answer):
     global global_answer
     if len(visited) == n:
         global_answer += 1
-        print("Найдена комбинация номер {}:".format(global_answer), to_answer)
-        print('-' * 100)
+        # print("Найдена комбинация номер {}:".format(global_answer), to_answer)
+        # print('-' * 100)
         return
     for i in range(is_even, n + 1, 2):
         if i not in visited:
@@ -30,12 +30,12 @@ def go_deep_to_build(n, is_even, visited, neighs, to_answer):
             visited.remove(i)
 
 
-start_time = time.time()
 global_answer = 0
 print('Задайте размер поиска меандров:')
 x = int(input())
 X_all = list()
 
+start_time = time.time()
 for i in range(x + 1):
     X_all.append(set())
 

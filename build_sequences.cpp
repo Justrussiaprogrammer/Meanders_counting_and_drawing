@@ -7,18 +7,20 @@ int global_answer = 0;
 
 
 void go_deep_to_build(int n, int is_even, std::vector<int> &visited, std::vector<std::vector<int> > &neighs,
- std::vector<int> &sequence, int step) {
+ std::vector<int> &sequence, int step, bool is_do) {
     if (step == n) {
         ++global_answer;
-        // printf("Найдена комбинация номер %d: ", global_answer);
-        // for (int elem : sequence) {
-        //     printf("%d, ", elem);
-        // }
-        // printf("\n");
-        // for (int i = 0; i < n; ++i) {
-        //     printf("-");
-        // }
-        // printf("\n");
+        if (is_do) {
+            printf("Найдена комбинация номер %d: ", global_answer);
+            for (int elem : sequence) {
+                printf("%d, ", elem);
+            }
+            printf("\n");
+            for (int i = 0; i < n; ++i) {
+                printf("-");
+            }
+            printf("\n");
+        }
         return;
     }
     for (int i = is_even; i < n + 1; i += 2) {
@@ -42,7 +44,7 @@ void go_deep_to_build(int n, int is_even, std::vector<int> &visited, std::vector
             visited[i] = 1;
 
             sequence[step] = i;
-            go_deep_to_build(n, 3 - is_even, visited, neighs, sequence, step + 1);
+            go_deep_to_build(n, 3 - is_even, visited, neighs, sequence, step + 1, is_do);
 
             for (int j = i + 1; j < n + 1; ++j) {
                 if (visited[j] == 0) {
@@ -59,10 +61,21 @@ void go_deep_to_build(int n, int is_even, std::vector<int> &visited, std::vector
 
 int main() {
     int x;
+    std::string type_output;
+    bool is_do_out = false;
 
     std::cout << "Задайте размер поиска меандров:" << std::endl;
 
     std::cin >> x;
+
+    std::cout << "Введите букву \'w\' или \'W\' чтобы получить вывод последовательностей меандров:" << std::endl;
+
+    std::cin >> type_output;
+
+    if (type_output == "W" || type_output == "w") {
+        is_do_out = true;
+    }
+
     std::vector<std::vector<int> > X_all(x + 1);
 
     for (int i = 0; i < x + 1; ++i) {
@@ -75,7 +88,7 @@ int main() {
     std::vector<int> empty_vector(x);
 
     auto start_point = std::chrono::system_clock::now();
-    go_deep_to_build(x, 1, empty_visited, X_all, empty_vector, 0);
+    go_deep_to_build(x, 1, empty_visited, X_all, empty_vector, 0, is_do_out);
     std::string string_for_meanders1 = " найден ";
     std::string string_for_meanders2 = " меандр";
     if (global_answer % 10 > 4 || (4 < global_answer % 100 && global_answer % 100 < 21) || global_answer % 10 == 0) {

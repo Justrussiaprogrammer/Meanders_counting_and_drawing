@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def get_count_neighbours(n, pos, visited, neighs):
     answer = len(neighs[pos])
     for i in range(pos + 1, n + 1):
@@ -73,3 +76,55 @@ def do_combination(n, combination, mass):
         last_pos = modified_combination[i]
 
     return mass
+
+
+def meander_to_matrix(meander):
+    n = len(meander)
+    matrix = list()
+    for i in range(n):
+        matrix.append([0] * n)
+
+    meander_string = ''.join([str(x) for x in meander])
+    for i in range(n):
+        for j in range(i + 1, n):
+            if meander_string.find(str(i + 1)) > meander_string.find(str(j + 1)):
+                matrix[i][j] = 1
+                matrix[j][i] = 1
+    return matrix
+
+
+def mask_to_matrix(n, mask):
+    local_arr = list()
+    for j in range(n):
+        local_arr.append([0] * n)
+
+    step = 2 ** (n * (n - 1) // 2 - 1)
+    i = 0
+    j = 1
+    while step > 0:
+        if step <= mask:
+            mask -= step
+            local_arr[i][j] = 1
+            local_arr[j][i] = 1
+        j += 1
+        if j == n:
+            i += 1
+            j = i + 1
+        step /= 2
+
+    return local_arr
+
+
+def composition_in_z2(n, A, B):
+    local_arr = list()
+    for j in range(n):
+        local_arr.append([0] * n)
+
+    for i in range(n):
+        for j in range(n):
+            local = 0
+            for o in range(n):
+                local += A[i][o] * B[o][j]
+            local_arr[i][j] = local % 2
+
+    return local_arr

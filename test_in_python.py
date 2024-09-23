@@ -2,35 +2,7 @@ import time
 import functions
 
 
-def go_deep_to_build(n, is_even, visited, neighs, to_answer):
-    global global_answer
-    if len(visited) == n:
-        global_answer += 1
-        # print("Найдена комбинация номер {}:".format(global_answer), to_answer)
-        # print('-' * 100)
-        return
-    for i in range(is_even, n + 1, 2):
-        if i not in visited:
-            for j in range(i + 1, n + 1):
-                if j not in visited:
-                    neighs[i].add(j)
-                    neighs[j].add(i)
-            if not functions.check_noted(n, i, visited, neighs):
-                for j in range(i + 1, n + 1):
-                    if j not in visited:
-                        neighs[i].remove(j)
-                        neighs[j].remove(i)
-                continue
-            visited.add(i)
-            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i])
-            for j in range(i + 1, n + 1):
-                if j not in visited:
-                    neighs[i].remove(j)
-                    neighs[j].remove(i)
-            visited.remove(i)
-
-
-global_answer = 0
+functions.GLOBAL_MATRICES = list()
 print('Задайте размер поиска меандров:')
 x = int(input())
 X_all = list()
@@ -39,9 +11,10 @@ start_time = time.time()
 for i in range(x + 1):
     X_all.append(set())
 
-go_deep_to_build(x, 1, set([]), X_all, list())
+functions.go_deep_to_build(x, 1, set([]), X_all, list())
 string_for_meanders1 = "найден"
 string_for_meanders2 = "меандр"
+global_answer = len(functions.GLOBAL_MATRICES)
 if global_answer % 10 > 4 or (4 < global_answer % 100 < 21):
     string_for_meanders1 = "найдено"
     string_for_meanders2 = "меандров"
@@ -50,3 +23,25 @@ elif global_answer % 10 > 1:
     string_for_meanders2 = "меандра"
 print("Для числа", x, string_for_meanders1, global_answer, string_for_meanders2)
 print("Всего прошло:", time.time() - start_time)
+
+
+# fd = open('info.json')
+# data = json.load(fd)
+# fd.close()
+#
+# matrixes = data[str(x)]
+#
+# for i in range(len(matrixes)):
+#     local_matrix = matrixes[i]
+#     print(np.array(local_matrix))
+#     print('Подходящие варианты:')
+#     for j in range(i + 1, len(matrixes)):
+#         A = matrixes[j]
+#         C = functions.composition_in_z2(x, local_matrix, A)
+#         D = functions.composition_in_z2(x, A, local_matrix)
+#         if C == D:
+#             print(np.array(A))
+#             print('>' * 100)
+#             print(np.array(C))
+#             print('-' * 100)
+#     print('end')

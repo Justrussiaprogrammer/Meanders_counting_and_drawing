@@ -1,6 +1,9 @@
 import numpy as np
 
 
+GLOBAL_MATRICES = list()
+
+
 def get_count_neighbours(n, pos, visited, neighs):
     answer = len(neighs[pos])
     for i in range(pos + 1, n + 1):
@@ -78,6 +81,36 @@ def do_combination(n, combination, mass):
     return mass
 
 
+def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode='n'):
+    global GLOBAL_MATRICES
+    if len(visited) == n:
+        GLOBAL_MATRICES.append(to_answer)
+        if mode == 'p':
+            print("Найдена комбинация номер {}:".format(len(GLOBAL_MATRICES)), to_answer)
+            print(np.array(meander_to_matrix(to_answer)))
+            print('-' * 100)
+        return
+    for i in range(is_even, n + 1, 2):
+        if i not in visited:
+            for j in range(i + 1, n + 1):
+                if j not in visited:
+                    neighs[i].add(j)
+                    neighs[j].add(i)
+            if not check_noted(n, i, visited, neighs):
+                for j in range(i + 1, n + 1):
+                    if j not in visited:
+                        neighs[i].remove(j)
+                        neighs[j].remove(i)
+                continue
+            visited.add(i)
+            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i])
+            for j in range(i + 1, n + 1):
+                if j not in visited:
+                    neighs[i].remove(j)
+                    neighs[j].remove(i)
+            visited.remove(i)
+
+
 def meander_to_matrix(meander):
     n = len(meander)
     matrix = list()
@@ -128,3 +161,26 @@ def composition_in_z2(n, A, B):
             local_arr[i][j] = local % 2
 
     return local_arr
+
+
+def get_good_compositions(n, meander):
+    global GLOBAL_MATRICES
+    GLOBAL_MATRICES = list()
+    x_all = list()
+
+    for i in range(n + 1):
+        x_all.append(set())
+
+    go_deep_to_build(n, 1, set([]), x_all, list())
+    local_matrix = meander_to_matrix(meander)
+    print(meander)
+    print('Подходящие варианты:')
+    for local_meander in GLOBAL_MATRICES:
+        A = meander_to_matrix(local_meander)
+        if A != local_matrix:
+            C = composition_in_z2(n, local_matrix, A)
+            D = composition_in_z2(n, A, local_matrix)
+            if C == D:
+                print(local_meander)
+                print('-' * 100)
+    print('end')

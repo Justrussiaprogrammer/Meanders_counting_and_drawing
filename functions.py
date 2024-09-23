@@ -81,13 +81,12 @@ def do_combination(n, combination, mass):
     return mass
 
 
-def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode='n'):
+def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode=''):
     global GLOBAL_MATRICES
     if len(visited) == n:
         GLOBAL_MATRICES.append(to_answer)
-        if mode == 'p':
+        if mode != '':
             print("Найдена комбинация номер {}:".format(len(GLOBAL_MATRICES)), to_answer)
-            print(np.array(meander_to_matrix(to_answer)))
             print('-' * 100)
         return
     for i in range(is_even, n + 1, 2):
@@ -103,7 +102,7 @@ def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode='n'):
                         neighs[j].remove(i)
                 continue
             visited.add(i)
-            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i])
+            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i], mode=mode)
             for j in range(i + 1, n + 1):
                 if j not in visited:
                     neighs[i].remove(j)

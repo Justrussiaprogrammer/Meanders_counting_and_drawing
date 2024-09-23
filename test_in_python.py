@@ -3,15 +3,15 @@ import functions
 
 
 functions.GLOBAL_MATRICES = list()
-print('Задайте размер поиска меандров:')
-x = int(input())
+n = int(input('Задайте размер поиска меандров:\n'))
 X_all = list()
+m = input('Введите любой символ для вывода меандров, и нажмите Enter чтобы получить просто количество:\n')
 
 start_time = time.time()
-for i in range(x + 1):
+for i in range(n + 1):
     X_all.append(set())
 
-functions.go_deep_to_build(x, 1, set([]), X_all, list())
+functions.go_deep_to_build(n, 1, set([]), X_all, list(), mode=m)
 string_for_meanders1 = "найден"
 string_for_meanders2 = "меандр"
 global_answer = len(functions.GLOBAL_MATRICES)
@@ -21,7 +21,7 @@ if global_answer % 10 > 4 or (4 < global_answer % 100 < 21):
 elif global_answer % 10 > 1:
     string_for_meanders1 = "найдено"
     string_for_meanders2 = "меандра"
-print("Для числа", x, string_for_meanders1, global_answer, string_for_meanders2)
+print("Для числа", n, string_for_meanders1, global_answer, string_for_meanders2)
 print("Всего прошло:", time.time() - start_time)
 
 

@@ -2,7 +2,6 @@ import time
 import functions
 
 
-functions.GLOBAL_MATRICES = list()
 n = int(input('Задайте размер поиска меандров:\n'))
 X_all = list()
 m = input('Введите любой символ для вывода меандров, и нажмите Enter чтобы получить просто количество:\n')

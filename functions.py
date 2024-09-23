@@ -1,6 +1,3 @@
-import numpy as np
-
-
 GLOBAL_MATRICES = list()
 
 
@@ -13,7 +10,7 @@ def get_count_neighbours(n, pos, visited, neighs):
     return answer
 
 
-def check_noted(n, pos, visited, neighs):
+def check_noted(pos, visited, neighs):
     for x in visited:
         if x in neighs[pos]:
             union = neighs[pos] | neighs[x]
@@ -24,6 +21,35 @@ def check_noted(n, pos, visited, neighs):
             if len(union) % 2 != 1:
                 return False
     return True
+
+
+def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode=''):
+    global GLOBAL_MATRICES
+    if len(visited) == n:
+        GLOBAL_MATRICES.append(to_answer)
+        if mode != '':
+            print("Найдена комбинация номер {}:".format(len(GLOBAL_MATRICES)), to_answer)
+            print('-' * 100)
+        return
+    for i in range(is_even, n + 1, 2):
+        if i not in visited:
+            for j in range(i + 1, n + 1):
+                if j not in visited:
+                    neighs[i].add(j)
+                    neighs[j].add(i)
+            if not check_noted(i, visited, neighs):
+                for j in range(i + 1, n + 1):
+                    if j not in visited:
+                        neighs[i].remove(j)
+                        neighs[j].remove(i)
+                continue
+            visited.add(i)
+            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i], mode=mode)
+            for j in range(i + 1, n + 1):
+                if j not in visited:
+                    neighs[i].remove(j)
+                    neighs[j].remove(i)
+            visited.remove(i)
 
 
 def print_screen(arr):
@@ -79,35 +105,6 @@ def do_combination(n, combination, mass):
         last_pos = modified_combination[i]
 
     return mass
-
-
-def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode=''):
-    global GLOBAL_MATRICES
-    if len(visited) == n:
-        GLOBAL_MATRICES.append(to_answer)
-        if mode != '':
-            print("Найдена комбинация номер {}:".format(len(GLOBAL_MATRICES)), to_answer)
-            print('-' * 100)
-        return
-    for i in range(is_even, n + 1, 2):
-        if i not in visited:
-            for j in range(i + 1, n + 1):
-                if j not in visited:
-                    neighs[i].add(j)
-                    neighs[j].add(i)
-            if not check_noted(n, i, visited, neighs):
-                for j in range(i + 1, n + 1):
-                    if j not in visited:
-                        neighs[i].remove(j)
-                        neighs[j].remove(i)
-                continue
-            visited.add(i)
-            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i], mode=mode)
-            for j in range(i + 1, n + 1):
-                if j not in visited:
-                    neighs[i].remove(j)
-                    neighs[j].remove(i)
-            visited.remove(i)
 
 
 def meander_to_matrix(meander):
@@ -172,6 +169,7 @@ def get_good_compositions(n, meander):
 
     go_deep_to_build(n, 1, set([]), x_all, list())
     local_matrix = meander_to_matrix(meander)
+    print('Данный меандр:')
     print(meander)
     print('Подходящие варианты:')
     for local_meander in GLOBAL_MATRICES:
@@ -183,3 +181,4 @@ def get_good_compositions(n, meander):
                 print(local_meander)
                 print('-' * 100)
     print('end')
+    GLOBAL_MATRICES = list()

@@ -1,3 +1,6 @@
+import numpy as np
+
+
 GLOBAL_MATRICES = list()
 
 
@@ -159,17 +162,39 @@ def composition_in_z2(n, A, B):
     return local_arr
 
 
+def matrix_to_meander(matrix):
+    n = len(matrix)
+    ans_meander = [i for i in range(1, n + 1)]
+    cur_numbers = [i for i in range(n)]
+    for i in range(n):
+        for j in range(i + 1, n):
+            if matrix[i][j] == 1:
+                x = ans_meander[cur_numbers[i]]
+                ans_meander[cur_numbers[i]] = ans_meander[cur_numbers[j]]
+                ans_meander[cur_numbers[j]] = x
+                y = cur_numbers[i]
+                cur_numbers[i] = cur_numbers[j]
+                cur_numbers[j] = y
+    return ans_meander
+
+
 def get_good_compositions(n, meander):
     global GLOBAL_MATRICES
     GLOBAL_MATRICES = list()
     x_all = list()
+    zero = [x + 1 for x in range(n)]
 
     for i in range(n + 1):
         x_all.append(set())
 
     go_deep_to_build(n, 1, set([]), x_all, list())
+
+    matrices_mass = list()
+    for word in GLOBAL_MATRICES:
+        matrices_mass.append(meander_to_matrix(word))
+
     local_matrix = meander_to_matrix(meander)
-    print('Данный меандр:')
+    print('Данный меандр (Первый множитель):')
     print(meander)
     print('Подходящие варианты:')
     for local_meander in GLOBAL_MATRICES:
@@ -178,7 +203,31 @@ def get_good_compositions(n, meander):
             C = composition_in_z2(n, local_matrix, A)
             D = composition_in_z2(n, A, local_matrix)
             if C == D:
-                print(local_meander)
-                print('-' * 100)
+                if C != A and C != local_matrix:
+                    if matrix_to_meander(C) == zero:
+                        print('Подходящая пара (получился ноль, выводится сумма):')
+                        print('>' * 100)
+                        print('Второй множитель:')
+                        print(local_meander)
+                        print('-' * 100)
+                        print('Сумма:')
+                        print('сделать')
+                        print('<' * 100)
+                    else:
+                        print('Подходящая пара (выводится произведение):')
+                        print('>' * 100)
+                        print('Второй множитель:')
+                        print(local_meander)
+                        print('-' * 100)
+                        print('Произведение:')
+                        print(matrix_to_meander(C))
+                        print('<' * 100)
     print('end')
     GLOBAL_MATRICES = list()
+
+
+# a = meander_to_matrix([1, 4, 3, 2, 5, 6])
+# b = meander_to_matrix([1, 6, 5, 4, 3, 2])
+# c = composition_in_z2(6, a, b)
+#
+# print(np.array(c))

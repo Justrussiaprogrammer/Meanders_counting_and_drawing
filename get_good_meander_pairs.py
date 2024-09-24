@@ -18,12 +18,10 @@ for o in range(count):
 
     functions.go_deep_to_build(8, 1, set([]), x_all, list())
 
-    # for meand in functions.GLOBAL_MATRICES:
-    #     print(meand)
-    #     print('_' * 100)
-    #     functions.get_good_compositions(len(meand), meand)
-
-    functions.get_good_compositions(len(meander), meander)
+    if meander in functions.GLOBAL_MATRICES:
+        functions.get_good_compositions(len(meander), meander)
+    else:
+        print('Вы ввели не меандр, попробуйте еще раз')
     print()
 
 

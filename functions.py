@@ -162,6 +162,18 @@ def composition_in_z2(n, A, B):
     return local_arr
 
 
+def addition_in_z2(n, A, B):
+    local_arr = list()
+    for j in range(n):
+        local_arr.append([0] * n)
+
+    for i in range(n):
+        for j in range(n):
+            local_arr[i][j] = (A[i][j] + B[i][j]) % 2
+
+    return local_arr
+
+
 def matrix_to_meander(matrix):
     n = len(matrix)
     ans_meander = [i for i in range(1, n + 1)]
@@ -183,6 +195,7 @@ def get_good_compositions(n, meander):
     GLOBAL_MATRICES = list()
     x_all = list()
     zero = [x + 1 for x in range(n)]
+    count_of_pairs = 0
 
     for i in range(n + 1):
         x_all.append(set())
@@ -205,16 +218,16 @@ def get_good_compositions(n, meander):
             if C == D:
                 if C != A and C != local_matrix:
                     if matrix_to_meander(C) == zero:
-                        print('Подходящая пара (получился ноль, выводится сумма):')
+                        print(f'Подходящая пара номер {count_of_pairs} (получился ноль, выводится сумма):')
                         print('>' * 100)
-                        print('Второй множитель:')
+                        print('Второе слагаемое:')
                         print(local_meander)
                         print('-' * 100)
                         print('Сумма:')
-                        print('сделать')
+                        print(matrix_to_meander(addition_in_z2(n, meander_to_matrix(meander), A)))
                         print('<' * 100)
                     else:
-                        print('Подходящая пара (выводится произведение):')
+                        print(f'Подходящая пара номер {count_of_pairs} (выводится произведение):')
                         print('>' * 100)
                         print('Второй множитель:')
                         print(local_meander)
@@ -222,6 +235,8 @@ def get_good_compositions(n, meander):
                         print('Произведение:')
                         print(matrix_to_meander(C))
                         print('<' * 100)
+                    print()
+                    count_of_pairs += 1
     print('end')
     GLOBAL_MATRICES = list()
 

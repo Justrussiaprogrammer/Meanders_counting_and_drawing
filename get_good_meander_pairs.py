@@ -10,13 +10,14 @@ for o in range(count):
         if let.isdigit():
             meander.append(int(let))
 
+    n = len(meander)
     functions.GLOBAL_MATRICES = list()
     x_all = list()
 
-    for i in range(9):
+    for i in range(n + 1):
         x_all.append(set())
 
-    functions.go_deep_to_build(8, 1, set([]), x_all, list())
+    functions.go_deep_to_build(n, 1, set([]), x_all, list())
 
     if meander in functions.GLOBAL_MATRICES:
         functions.get_good_compositions(len(meander), meander)

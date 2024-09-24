@@ -237,7 +237,6 @@ def get_good_compositions(n, meander):
                         print('<' * 100)
                     print()
                     count_of_pairs += 1
-    print('end')
     GLOBAL_MATRICES = list()
 
 

@@ -1,6 +1,8 @@
 import functions
 
+
 count = int(input('Введите количество меандров, для которых вы хотите получить информацию:\n'))
+m = input('Введите любой символ для вывода меандров, и нажмите Enter чтобы получить просто количество:\n')
 
 for o in range(count):
     mass = input('Через пробел задайте меандр для проверки:\n')
@@ -11,20 +13,15 @@ for o in range(count):
             meander.append(int(let))
 
     n = len(meander)
-    functions.GLOBAL_MATRICES = list()
-    x_all = list()
+    mndrs = functions.Meanders(n)
 
-    for i in range(n + 1):
-        x_all.append(set())
+    all_mndrs = mndrs.get_all_meanders(m)
 
-    functions.go_deep_to_build(n, 1, set([]), x_all, list())
-
-    if meander in functions.GLOBAL_MATRICES:
+    if meander in all_mndrs:
         functions.get_good_compositions(len(meander), meander)
     else:
         print('Вы ввели не меандр, попробуйте еще раз')
-    print()
-
+    print('')
 
 
 # 5 8 7 6 9 2 3 4 1 10

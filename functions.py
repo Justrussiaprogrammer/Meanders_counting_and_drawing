@@ -1,16 +1,75 @@
-import numpy as np
+import time
 
 
-GLOBAL_MATRICES = list()
+class Meanders:
+    def __init__(self, n):
+        self.all_meanders = list()
+        self.n = n
+        self.x_all = list()
+        self.speed = 0
+        for i in range(self.n + 1):
+            self.x_all.append(set())
 
+    def get_count_neighbours(self, pos, visited, neighs):
+        answer = len(neighs[pos])
+        for i in range(pos + 1, self.n + 1):
+            if i not in visited:
+                answer += 1
 
-def get_count_neighbours(n, pos, visited, neighs):
-    answer = len(neighs[pos])
-    for i in range(pos + 1, n + 1):
-        if i not in visited:
-            answer += 1
+        return answer
 
-    return answer
+    def _go_deep_to_build(self, is_even, visited, neighs, to_answer, mode=''):
+        if len(visited) == self.n:
+            self.all_meanders.append(to_answer)
+            if mode != '':
+                print("Найдена комбинация номер {}:".format(len(self.all_meanders)), to_answer)
+                print('-' * 100)
+            return
+        for i in range(is_even, self.n + 1, 2):
+            if i not in visited:
+                for j in range(i + 1, self.n + 1):
+                    if j not in visited:
+                        neighs[i].add(j)
+                        neighs[j].add(i)
+                if not check_noted(i, visited, neighs):
+                    for j in range(i + 1, self.n + 1):
+                        if j not in visited:
+                            neighs[i].remove(j)
+                            neighs[j].remove(i)
+                    continue
+                visited.add(i)
+                self._go_deep_to_build(3 - is_even, visited, neighs, to_answer + [i], mode=mode)
+                for j in range(i + 1, self.n + 1):
+                    if j not in visited:
+                        neighs[i].remove(j)
+                        neighs[j].remove(i)
+                visited.remove(i)
+
+    def get_all_meanders(self, mode=''):
+        if len(self.all_meanders) < 1:
+            start_time = time.time()
+            self._go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
+            self.speed = time.time() - start_time
+
+        return self.all_meanders
+
+    def get_meanders_info(self, mode=''):
+        if len(self.all_meanders) < 1:
+            start_time = time.time()
+            self._go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
+            self.speed = time.time() - start_time
+
+        answer = len(self.all_meanders)
+        string_for_meanders1 = "найден"
+        string_for_meanders2 = "меандр"
+        if answer % 10 > 4 or (4 < answer % 100 < 21):
+            string_for_meanders1 = "найдено"
+            string_for_meanders2 = "меандров"
+        elif answer % 10 > 1:
+            string_for_meanders1 = "найдено"
+            string_for_meanders2 = "меандра"
+        print("Для числа", self.n, string_for_meanders1, answer, string_for_meanders2)
+        print("Всего прошло:", self.speed)
 
 
 def check_noted(pos, visited, neighs):
@@ -24,35 +83,6 @@ def check_noted(pos, visited, neighs):
             if len(union) % 2 != 1:
                 return False
     return True
-
-
-def go_deep_to_build(n, is_even, visited, neighs, to_answer, mode=''):
-    global GLOBAL_MATRICES
-    if len(visited) == n:
-        GLOBAL_MATRICES.append(to_answer)
-        if mode != '':
-            print("Найдена комбинация номер {}:".format(len(GLOBAL_MATRICES)), to_answer)
-            print('-' * 100)
-        return
-    for i in range(is_even, n + 1, 2):
-        if i not in visited:
-            for j in range(i + 1, n + 1):
-                if j not in visited:
-                    neighs[i].add(j)
-                    neighs[j].add(i)
-            if not check_noted(i, visited, neighs):
-                for j in range(i + 1, n + 1):
-                    if j not in visited:
-                        neighs[i].remove(j)
-                        neighs[j].remove(i)
-                continue
-            visited.add(i)
-            go_deep_to_build(n, 3 - is_even, visited, neighs, to_answer + [i], mode=mode)
-            for j in range(i + 1, n + 1):
-                if j not in visited:
-                    neighs[i].remove(j)
-                    neighs[j].remove(i)
-            visited.remove(i)
 
 
 def print_screen(arr):
@@ -191,26 +221,21 @@ def matrix_to_meander(matrix):
 
 
 def get_good_compositions(n, meander):
-    global GLOBAL_MATRICES
-    GLOBAL_MATRICES = list()
-    x_all = list()
     zero = [x + 1 for x in range(n)]
     count_of_pairs = 0
 
-    for i in range(n + 1):
-        x_all.append(set())
-
-    go_deep_to_build(n, 1, set([]), x_all, list())
+    mndr = Meanders(n)
+    all_mndrs = mndr.get_all_meanders()
 
     matrices_mass = list()
-    for word in GLOBAL_MATRICES:
+    for word in all_mndrs:
         matrices_mass.append(meander_to_matrix(word))
 
     local_matrix = meander_to_matrix(meander)
     print('Данный меандр (Первый множитель):')
     print(meander)
     print('Подходящие варианты:')
-    for local_meander in GLOBAL_MATRICES:
+    for local_meander in all_mndrs:
         A = meander_to_matrix(local_meander)
         if A != local_matrix:
             C = composition_in_z2(n, local_matrix, A)
@@ -235,13 +260,5 @@ def get_good_compositions(n, meander):
                         print('Произведение:')
                         print(matrix_to_meander(C))
                         print('<' * 100)
-                    print()
+                    print('')
                     count_of_pairs += 1
-    GLOBAL_MATRICES = list()
-
-
-# a = meander_to_matrix([1, 4, 3, 2, 5, 6])
-# b = meander_to_matrix([1, 6, 5, 4, 3, 2])
-# c = composition_in_z2(6, a, b)
-#
-# print(np.array(c))

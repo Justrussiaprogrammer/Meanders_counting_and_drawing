@@ -18,7 +18,7 @@ class Meanders:
 
         return answer
 
-    def _go_deep_to_build(self, is_even, visited, neighs, to_answer, mode=''):
+    def __go_deep_to_build(self, is_even, visited, neighs, to_answer, mode=''):
         if len(visited) == self.n:
             self.all_meanders.append(to_answer)
             if mode != '':
@@ -38,7 +38,7 @@ class Meanders:
                             neighs[j].remove(i)
                     continue
                 visited.add(i)
-                self._go_deep_to_build(3 - is_even, visited, neighs, to_answer + [i], mode=mode)
+                self.__go_deep_to_build(3 - is_even, visited, neighs, to_answer + [i], mode=mode)
                 for j in range(i + 1, self.n + 1):
                     if j not in visited:
                         neighs[i].remove(j)
@@ -48,7 +48,7 @@ class Meanders:
     def get_all_meanders(self, mode=''):
         if len(self.all_meanders) < 1:
             start_time = time.time()
-            self._go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
+            self.__go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
             self.speed = time.time() - start_time
 
         return self.all_meanders
@@ -56,7 +56,7 @@ class Meanders:
     def get_meanders_info(self, mode=''):
         if len(self.all_meanders) < 1:
             start_time = time.time()
-            self._go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
+            self.__go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
             self.speed = time.time() - start_time
 
         answer = len(self.all_meanders)

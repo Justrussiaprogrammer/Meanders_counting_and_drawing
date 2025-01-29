@@ -192,7 +192,16 @@ def composition_in_z2(n, A, B):
     return local_arr
 
 
-def addition_in_z2(n, A, B):
+def addition_in_z2(A, B):
+    """
+    :param A: list[list]; задаёт матрицу-множитель 1
+    :param B: list[list]; задаёт матрицу-множитель 2
+    """
+    n = len(A)
+    m = len(B)
+    if n != m:
+        print("bad sizes")
+        return list()
     local_arr = list()
     for j in range(n):
         local_arr.append([0] * n)
@@ -205,6 +214,9 @@ def addition_in_z2(n, A, B):
 
 
 def matrix_to_meander(matrix):
+    """
+    :param matrix: list[list]; задаёт матрицу
+    """
     n = len(matrix)
     ans_meander = [i for i in range(1, n + 1)]
     cur_numbers = [i for i in range(n)]
@@ -220,7 +232,11 @@ def matrix_to_meander(matrix):
     return ans_meander
 
 
-def get_good_compositions(n, meander):
+def get_good_compositions(meander):
+    """
+    :param meander: list; задаёт меандр
+    """
+    n = len(meander)
     zero = [x + 1 for x in range(n)]
     count_of_pairs = 0
 
@@ -249,7 +265,7 @@ def get_good_compositions(n, meander):
                         print(local_meander)
                         print('-' * 100)
                         print('Сумма:')
-                        print(matrix_to_meander(addition_in_z2(n, meander_to_matrix(meander), A)))
+                        print(matrix_to_meander(addition_in_z2(meander_to_matrix(meander), A)))
                         print('<' * 100)
                     else:
                         print(f'Подходящая пара номер {count_of_pairs} (выводится произведение):')

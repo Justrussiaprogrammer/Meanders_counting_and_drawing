@@ -18,7 +18,7 @@ for o in range(count):
     all_mndrs = mndrs.get_all_meanders(m)
 
     if meander in all_mndrs:
-        functions.get_good_compositions(len(meander), meander)
+        functions.get_good_compositions(meander)
     else:
         print('Вы ввели не меандр, попробуйте еще раз')
     print('')

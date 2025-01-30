@@ -1,4 +1,5 @@
 import time
+import numpy
 
 
 class Meanders:
@@ -149,7 +150,7 @@ def meander_to_matrix(meander):
     meander_string = ''.join([str(x) for x in meander])
     for i in range(n):
         for j in range(i + 1, n):
-            if meander_string.find(str(i + 1)) > meander_string.find(str(j + 1)):
+            if meander[i] > meander[j]:
                 matrix[i][j] = 1
                 matrix[j][i] = 1
     return matrix
@@ -212,6 +213,16 @@ def addition_in_z2(A, B):
 
     return local_arr
 
+def addition_in_z2(n, A, B):
+    local_arr = list()
+    for j in range(n):
+        local_arr.append([0] * n)
+
+    for i in range(n):
+        for j in range(n):
+            local_arr[i][j] = (A[i][j] + B[i][j]) % 2
+
+    return local_arr
 
 def matrix_to_meander(matrix):
     """
@@ -220,15 +231,21 @@ def matrix_to_meander(matrix):
     n = len(matrix)
     ans_meander = [i for i in range(1, n + 1)]
     cur_numbers = [i for i in range(n)]
+    # for i in range(n):
+    #     for j in range(i + 1, n):
+    #         if matrix[i][j] == 1:
+    #             x = ans_meander[cur_numbers[i]]
+    #             ans_meander[cur_numbers[i]] = ans_meander[cur_numbers[j]]
+    #             ans_meander[cur_numbers[j]] = x
+    #             y = cur_numbers[i]
+    #             cur_numbers[i] = cur_numbers[j]
+    #             cur_numbers[j] = y
     for i in range(n):
         for j in range(i + 1, n):
             if matrix[i][j] == 1:
-                x = ans_meander[cur_numbers[i]]
-                ans_meander[cur_numbers[i]] = ans_meander[cur_numbers[j]]
-                ans_meander[cur_numbers[j]] = x
-                y = cur_numbers[i]
-                cur_numbers[i] = cur_numbers[j]
-                cur_numbers[j] = y
+                x = ans_meander[i]
+                ans_meander[i] = ans_meander[j]
+                ans_meander[j] = x
     return ans_meander
 
 
@@ -278,3 +295,7 @@ def get_good_compositions(meander):
                         print('<' * 100)
                     print('')
                     count_of_pairs += 1
+
+# arr = [7, 6, 3, 2, 1, 4, 5, 8]
+# print(numpy.array(meander_to_matrix(arr)))
+# print(matrix_to_meander(meander_to_matrix(arr)))

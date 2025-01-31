@@ -240,12 +240,28 @@ def matrix_to_meander(matrix):
     #             y = cur_numbers[i]
     #             cur_numbers[i] = cur_numbers[j]
     #             cur_numbers[j] = y
+    cur_min_free = 0
+    used = [False for _ in range(n)]
     for i in range(n):
+        cur_sum = 0
         for j in range(i + 1, n):
             if matrix[i][j] == 1:
-                x = ans_meander[i]
-                ans_meander[i] = ans_meander[j]
-                ans_meander[j] = x
+                cur_sum += 1
+        if cur_sum == 0:
+            ans_meander[i] = cur_min_free + 1
+            used[cur_min_free] = True
+            for k in range(cur_min_free + 1, n):
+                if not used[k]:
+                    cur_min_free = k
+                    break
+        else:
+            for k in range(cur_min_free + cur_sum, n):
+                if not used[k]:
+                    ans_meander[i] = k + 1
+                    used[k] = True
+                    break
+
+
     return ans_meander
 
 
@@ -296,6 +312,9 @@ def get_good_compositions(meander):
                     print('')
                     count_of_pairs += 1
 
-# arr = [7, 6, 3, 2, 1, 4, 5, 8]
+# arr = [5, 2, 3, 4, 1, 6, 9, 8, 7, 10]
+# arr = [7, 6, 5, 4, 1, 2, 3, 8]
+#arr = [7, 6, 3, 2, 1, 4, 5, 8]
+# arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 # print(numpy.array(meander_to_matrix(arr)))
 # print(matrix_to_meander(meander_to_matrix(arr)))

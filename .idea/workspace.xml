@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d148bf18-3be0-4b36-b2fc-5cd3cee8b59f" name="Changes" comment="First adding">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="d148bf18-3be0-4b36-b2fc-5cd3cee8b59f" name="Changes" comment="Changed meander_to_matrix and matrix_to_meander">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
     </list>
@@ -37,6 +36,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.drawing2.executor": "Run",
     "Python.functions.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -68,7 +68,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710094151696</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Changed meander_to_matrix and matrix_to_meander">
+      <option name="closed" value="true" />
+      <created>1738223500465</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738223500465</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -84,6 +92,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First adding" />
-    <option name="LAST_COMMIT_MESSAGE" value="First adding" />
+    <MESSAGE value="Changed meander_to_matrix and matrix_to_meander" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed meander_to_matrix and matrix_to_meander" />
   </component>
 </project>

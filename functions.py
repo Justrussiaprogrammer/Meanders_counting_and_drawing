@@ -1,5 +1,5 @@
 import time
-import numpy
+import numpy as np
 
 
 class Meanders:
@@ -213,54 +213,30 @@ def addition_in_z2(A, B):
 
     return local_arr
 
-def addition_in_z2(n, A, B):
-    local_arr = list()
-    for j in range(n):
-        local_arr.append([0] * n)
-
-    for i in range(n):
-        for j in range(n):
-            local_arr[i][j] = (A[i][j] + B[i][j]) % 2
-
-    return local_arr
-
 def matrix_to_meander(matrix):
     """
-    :param matrix: list[list]; задаёт матрицу
+    :param matrix: list[list]; задаёт матрицу меандра
     """
     n = len(matrix)
-    ans_meander = [i for i in range(1, n + 1)]
-    cur_numbers = [i for i in range(n)]
-    # for i in range(n):
-    #     for j in range(i + 1, n):
-    #         if matrix[i][j] == 1:
-    #             x = ans_meander[cur_numbers[i]]
-    #             ans_meander[cur_numbers[i]] = ans_meander[cur_numbers[j]]
-    #             ans_meander[cur_numbers[j]] = x
-    #             y = cur_numbers[i]
-    #             cur_numbers[i] = cur_numbers[j]
-    #             cur_numbers[j] = y
-    cur_min_free = 0
-    used = [False for _ in range(n)]
+    ans_meander = [0] * n
+    cur_min_free = 1
+    used = [False] * n
     for i in range(n):
-        cur_sum = 0
-        for j in range(i + 1, n):
-            if matrix[i][j] == 1:
-                cur_sum += 1
-        if cur_sum == 0:
-            ans_meander[i] = cur_min_free + 1
-            used[cur_min_free] = True
-            for k in range(cur_min_free + 1, n):
-                if not used[k]:
-                    cur_min_free = k
-                    break
-        else:
-            for k in range(cur_min_free + cur_sum, n):
-                if not used[k]:
-                    ans_meander[i] = k + 1
-                    used[k] = True
-                    break
+        line_sum = sum(matrix[i][i:])
 
+        pos = cur_min_free
+        plus = 0
+        while plus != line_sum:
+            if not used[pos - 1]:
+                plus += 1
+            pos += 1
+        while used[pos - 1]:
+            pos += 1
+
+        ans_meander[i] = pos
+        used[pos - 1] = True
+        if pos == cur_min_free:
+            cur_min_free += 1
 
     return ans_meander
 

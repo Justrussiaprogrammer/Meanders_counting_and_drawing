@@ -295,7 +295,3 @@ def get_good_compositions(meander):
                         print('<' * 100)
                     print('')
                     count_of_pairs += 1
-
-# arr = [7, 6, 3, 2, 1, 4, 5, 8]
-# print(numpy.array(meander_to_matrix(arr)))
-# print(matrix_to_meander(meander_to_matrix(arr)))

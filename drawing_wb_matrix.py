@@ -39,7 +39,7 @@ if flag:
 				draw.rectangle((pos_x, pos_y, pos_x + size, pos_y + size), fill="white", outline="black")
 
 	print("Визуализация готова")
-	if flag_save == '':
+	if flag_save != '':
 		image.save(filename)
 	root.mainloop()
 else:

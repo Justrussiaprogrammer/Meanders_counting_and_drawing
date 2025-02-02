@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk, Canvas
 import functions
 
 current_height = 800
@@ -15,7 +15,6 @@ n = len(meander)
 if flag:
 	size = int(input('Задайте размер клеток (обычно подходит 40):\n'))
 	start = current_height // 2 - n // 2 * size
-	print(start, start + n * size)
 
 	C.create_rectangle(start, start, start + n * size, start + n * size, fill="white", outline="black")
 
@@ -30,6 +29,6 @@ if flag:
 				C.create_rectangle(pos_x, pos_y, pos_x + size, pos_y + size, fill="white", outline="black")
 
 	C.pack()
-	mainloop()
+	root.mainloop()
 else:
 	print('Вы ввели не меандр, попробуйте еще раз')

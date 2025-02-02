@@ -303,10 +303,3 @@ def is_meander(letters, out):
     if meander not in all_mndrs:
         return [], False
     return meander, True
-
-# arr = [5, 2, 3, 4, 1, 6, 9, 8, 7, 10]
-# arr = [7, 6, 5, 4, 1, 2, 3, 8]
-#arr = [7, 6, 3, 2, 1, 4, 5, 8]
-# arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-# print(numpy.array(meander_to_matrix(arr)))
-# print(matrix_to_meander(meander_to_matrix(arr)))

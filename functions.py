@@ -288,6 +288,22 @@ def get_good_compositions(meander):
                     print('')
                     count_of_pairs += 1
 
+def is_meander(letters, out):
+    meander = list()
+
+    for let in letters.split():
+        if let.isdigit():
+            meander.append(int(let))
+
+    n = len(meander)
+    mndrs = Meanders(n)
+
+    all_mndrs = mndrs.get_all_meanders(mode=out)
+
+    if meander not in all_mndrs:
+        return [], False
+    return meander, True
+
 # arr = [5, 2, 3, 4, 1, 6, 9, 8, 7, 10]
 # arr = [7, 6, 5, 4, 1, 2, 3, 8]
 #arr = [7, 6, 3, 2, 1, 4, 5, 8]

@@ -6,10 +6,7 @@ class Meanders:
     def __init__(self, n):
         self.all_meanders = list()
         self.n = n
-        self.x_all = list()
         self.speed = 0
-        for i in range(self.n + 1):
-            self.x_all.append(set())
 
     def get_count_neighbours(self, pos, visited, neighs):
         answer = len(neighs[pos])
@@ -19,37 +16,39 @@ class Meanders:
 
         return answer
 
-    def __go_deep_to_build(self, is_even, visited, neighs, to_answer, mode=''):
-        if len(visited) == self.n:
+    def __go_deep_to_build(self, is_even, visited, set_visited, neighs, to_answer, depth, mode=''):
+        if depth == self.n:
             self.all_meanders.append(to_answer)
             if mode != '':
                 print("Найдена комбинация номер {}:".format(len(self.all_meanders)), to_answer)
                 print('-' * 100)
             return
         for i in range(is_even, self.n + 1, 2):
-            if i not in visited:
+            if visited[i] == 0:
                 for j in range(i + 1, self.n + 1):
-                    if j not in visited:
-                        neighs[i].add(j)
-                        neighs[j].add(i)
-                if not check_noted(i, visited, neighs):
+                    if visited[j] == 0:
+                        neighs[i] += 2 ** j
+                        neighs[j] += 2 ** i
+                if not check_noted(i, set_visited, neighs):
                     for j in range(i + 1, self.n + 1):
-                        if j not in visited:
-                            neighs[i].remove(j)
-                            neighs[j].remove(i)
+                        if visited[j] == 0:
+                            neighs[i] -= 2 ** j
+                            neighs[j] -= 2 ** i
                     continue
-                visited.add(i)
-                self.__go_deep_to_build(3 - is_even, visited, neighs, to_answer + [i], mode=mode)
+                visited[i] = 1
+                set_visited.add(i)
+                self.__go_deep_to_build(3 - is_even, visited, set_visited, neighs, to_answer + [i], depth + 1, mode=mode)
                 for j in range(i + 1, self.n + 1):
-                    if j not in visited:
-                        neighs[i].remove(j)
-                        neighs[j].remove(i)
-                visited.remove(i)
+                    if visited[j] == 0:
+                        neighs[i] -= 2 ** j
+                        neighs[j] -= 2 ** i
+                visited[i] = 0
+                set_visited.remove(i)
 
     def get_all_meanders(self, mode=''):
         if len(self.all_meanders) < 1:
             start_time = time.time()
-            self.__go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
+            self.__go_deep_to_build(1, [0] * (self.n + 1), set([]), [0] * (self.n + 1), list(), 0, mode=mode)
             self.speed = time.time() - start_time
 
         return self.all_meanders
@@ -57,7 +56,7 @@ class Meanders:
     def get_meanders_info(self, mode=''):
         if len(self.all_meanders) < 1:
             start_time = time.time()
-            self.__go_deep_to_build(1, set([]), self.x_all, list(), mode=mode)
+            self.__go_deep_to_build(1, [0] * (self.n + 1), set([]), [0] * (self.n + 1), list(), 0, mode=mode)
             self.speed = time.time() - start_time
 
         answer = len(self.all_meanders)
@@ -75,13 +74,13 @@ class Meanders:
 
 def check_noted(pos, visited, neighs):
     for x in visited:
-        if x in neighs[pos]:
-            union = neighs[pos] | neighs[x]
-            if len(union) % 2 != 0:
+        if (2 ** x) & neighs[pos] == 2 ** x:
+            union = neighs[pos] & neighs[x]
+            if union.bit_count() % 2 == 1:
                 return False
         else:
-            union = neighs[pos] | neighs[x]
-            if len(union) % 2 != 1:
+            union = neighs[pos] & neighs[x]
+            if union.bit_count() % 2 == 0:
                 return False
     return True
 

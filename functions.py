@@ -240,18 +240,17 @@ def get_good_compositions(meander):
     zero = [x + 1 for x in range(n)]
     count_of_pairs = 0
 
-    mndr = Meanders(n)
-    all_mndrs = mndr.get_all_meanders()
+    all_meanders = Meanders(n).get_all_meanders()
 
     matrices_mass = list()
-    for word in all_mndrs:
+    for word in all_meanders:
         matrices_mass.append(meander_to_matrix(word))
 
     local_matrix = meander_to_matrix(meander)
     print('Данный меандр (Первый множитель):')
     print(meander)
     print('Подходящие варианты:')
-    for local_meander in all_mndrs:
+    for local_meander in all_meanders:
         A = meander_to_matrix(local_meander)
         if A != local_matrix:
             C = composition_in_z2(n, local_matrix, A)
@@ -286,12 +285,9 @@ def is_meander(letters, out):
         if let.isdigit():
             meander.append(int(let))
 
-    n = len(meander)
-    mndrs = Meanders(n)
+    all_meanders = Meanders(len(meander)).get_all_meanders(mode=out)
 
-    all_mndrs = mndrs.get_all_meanders(mode=out)
-
-    if meander not in all_mndrs:
+    if meander not in all_meanders:
         return [], False
     return meander, True
 

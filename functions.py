@@ -212,6 +212,7 @@ def addition_in_z2(A, B):
 
     return local_arr
 
+
 def matrix_to_meander(matrix):
     """
     :param matrix: list[list]; задаёт матрицу меандра
@@ -229,7 +230,7 @@ def matrix_to_meander(matrix):
             if not used[pos - 1]:
                 plus += 1
             pos += 1
-        while used[pos - 1]:
+        while pos < n and used[pos - 1]:
             pos += 1
 
         ans_meander[i] = pos

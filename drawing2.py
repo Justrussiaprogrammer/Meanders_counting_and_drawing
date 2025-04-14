@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import io
 
 
 def print_meanders(combination):
     cnt = -1
-    plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(10, 8))
     plt.xticks(np.arange(1, len(combination) + 1, 1))
     ax = plt.gca()
     ax.spines['right'].set_color('none')
@@ -19,9 +20,9 @@ def print_meanders(combination):
         x = np.linspace(a, b, num=100, endpoint=True)
         plt.plot(x, ((((b - a)/2)**2 - (x - (a + b)/2)**2)**(1/2)) * cnt, color='g')
         cnt *= -1
-    plt.show()
+    return fig
 
 
 
-combination = [5, 6, 7, 4, 1, 2, 3, 8]
-print_meanders(combination)
+# combination = [5, 6, 7, 4, 1, 2, 3, 8]
+# print_meanders(combination)

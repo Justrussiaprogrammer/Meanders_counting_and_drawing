@@ -1,6 +1,4 @@
-
 import functions
-import drawing2
 
 import tkinter as tk
 from tkinter import simpledialog, messagebox
@@ -15,13 +13,13 @@ class MeanderApp:
         self.matrix = None
         self.current_frame = None
         self.buttons = []
-        self.start_app()
+        self.__start_app()
 
     def clear_frame(self):
         if self.current_frame:
             self.current_frame.destroy()
 
-    def start_app(self):
+    def __start_app(self):
         self.clear_frame()
 
         self.current_frame = tk.Frame(self.root)
@@ -120,7 +118,7 @@ class MeanderApp:
         self.current_frame.pack()
 
         # Создание графика
-        fig = drawing2.print_meanders(meander)
+        fig = functions.print_meanders(meander)
 
         canvas = FigureCanvasTkAgg(fig, master=self.current_frame)
         canvas.draw()
@@ -130,7 +128,7 @@ class MeanderApp:
         control_frame = tk.Frame(self.current_frame)
         control_frame.pack(pady=10)
 
-        tk.Button(control_frame, text="Продолжить", command=self.start_app).pack(side=tk.LEFT, padx=5)
+        tk.Button(control_frame, text="Продолжить", command=self.__start_app).pack(side=tk.LEFT, padx=5)
         tk.Button(control_frame, text="Завершить", command=self.root.destroy).pack(side=tk.LEFT, padx=5)
 
 

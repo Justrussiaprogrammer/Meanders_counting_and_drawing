@@ -2,21 +2,21 @@ import functions
 import sys
 
 
-print("Введите режим записи. Английская буква 'f' считается как файловый тип, иначе консоль:")
-text = input()
+meander = list(map(int, input("Введите меандр для рисования через запятую:\n").split()))
+n = len(meander)
+input_type = input("Введите режим записи: буква <f> означает запись в файл, любой иной вариант выводится в консоль:")
 
-if text.lower() == 'f':
-    f = open('123.txt', 'w')
+arr = functions.do_combination(n, meander)
+
+if input_type == 'f':
+    f = open('drawing.txt', 'w')
     sys.stdout = f
 
-combination = [5, 4, 3, 2, 1, 6]
-n = len(combination)
-
-
-arr = functions.do_screen(n)
-arr = functions.do_combination(n, combination, arr)
 print('/' * 100)
-functions.print_screen(arr)
+for line in arr:
+    if len(line) != line.count(' '):
+        print(line)
+print('/' * 100)
 
-if text.lower() == 'f':
+if input_type == 'f':
     f.close()

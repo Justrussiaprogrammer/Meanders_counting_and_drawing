@@ -3,8 +3,23 @@ import functions
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import numpy as np
+import os
+import sys
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
+if os.name == "posix":              # Для MacOs
+    from tkmacosx import Button
+    button_width = 80
+    button_height = 30
+elif os.name == "nt":
+    from tkinter import Button      # Для Windows
+    button_width = 3
+    button_height = 1
+else:
+    print("Don't know the system")
+    sys.exit(-1)
 
 
 class MeanderApp:
@@ -69,10 +84,10 @@ class MeanderApp:
             row_frame.pack()
             row_buttons = []
             for j in range(self.size):
-                btn = tk.Button(
+                btn = Button(
                     row_frame,
-                    width=3,
-                    height=1,
+                    width=button_width,
+                    height=button_height,
                     bg='white',
                     command=lambda x=i, y=j: self.toggle_cell(x, y)
                 )

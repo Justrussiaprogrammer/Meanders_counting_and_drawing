@@ -2,9 +2,9 @@ import functions
 import sys
 
 
-meander = list(map(int, input("Введите меандр для рисования через запятую:\n").split()))
+meander = list(map(int, input("Введите меандр для рисования через пробел:\n").split()))
 n = len(meander)
-input_type = input("Введите режим записи: буква <f> означает запись в файл, любой иной вариант выводится в консоль:")
+input_type = input("Введите режим записи: буква <f> означает запись в файл, любой иной вариант выводится в консоль:\n")
 
 arr = functions.do_combination(n, meander)
 

@@ -13,8 +13,8 @@ if os.name == "posix":              # Для MacOs
     from tkmacosx import Button
     button_width = 80
     button_height = 30
-elif os.name == "nt":
-    from tkinter import Button      # Для Windows
+elif os.name == "nt":               # Для Windows
+    from tkinter import Button
     button_width = 3
     button_height = 1
 else:

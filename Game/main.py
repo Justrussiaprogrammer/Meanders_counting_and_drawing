@@ -5,9 +5,7 @@ from tkinter import simpledialog, messagebox
 import numpy as np
 import os
 import sys
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 
 if os.name == "posix":              # Для MacOs
     from tkmacosx import Button
@@ -27,6 +25,7 @@ class MeanderApp:
         self.root = root
         self.matrix = None
         self.current_frame = None
+        self.meanders = None
         self.buttons = []
         self.__start_app()
 
@@ -50,12 +49,13 @@ class MeanderApp:
 
         self.size = size
         self.matrix = np.zeros((size, size), dtype=int)
+        self.meanders = None
         self.create_matrix_grid()
 
     def create_matrix_grid(self):
         self.clear_frame()
         self.current_frame = tk.Frame(self.root)
-        self.current_frame.pack()
+        self.current_frame.pack(expand=True, fill=tk.BOTH)
 
         container = tk.Frame(self.current_frame)
         container.pack(expand=True, fill=tk.BOTH)
@@ -80,18 +80,33 @@ class MeanderApp:
         # Создание сетки кнопок
         self.buttons = []
         for i in range(self.size):
-            row_frame = tk.Frame(self.current_frame)
+            row_frame = tk.Frame(scrollable_frame)
             row_frame.pack()
             row_buttons = []
             for j in range(self.size):
-                btn = Button(
-                    row_frame,
-                    width=button_width,
-                    height=button_height,
-                    bg='white',
-                    command=lambda x=i, y=j: self.toggle_cell(x, y)
-                )
-                btn.grid(row=i, column=j, padx=2, pady=2)
+                if j > i:
+                    btn = Button(
+                        row_frame,
+                        width=button_width,
+                        height=button_height,
+                        bg=self.get_button_color(i, j),
+                        command=lambda x=i, y=j: self.toggle_cell(x, y)
+                    )
+                else:
+                    btn = Button(
+                        row_frame,
+                        width=button_width,
+                        height=button_height,
+                        bg=self.get_button_color(i, j),
+                        command=lambda x=i, y=j: self.toggle_cell(x, y),
+                        state='disabled'
+                    )
+                # if j == i + 1:
+                #     btn.grid(row=i, column=0, padx=(2 + button_width) * i)
+                # else:
+                #     btn.grid(row=i, column=0, padx=)
+                # btn.grid(row=i, column=0, padx=(2 + button_width) * i + j * button_width)
+                btn.grid(row=i, column=j, padx=2)
                 row_buttons.append(btn)
             self.buttons.append(row_buttons)
 
@@ -99,19 +114,36 @@ class MeanderApp:
         control_frame = tk.Frame(self.current_frame)
         control_frame.pack(pady=10)
 
-        tk.Button(control_frame, text="Сгенерировать", command=self.generate_meander).pack(side=tk.LEFT, padx=5)
-        tk.Button(control_frame, text="Завершить", command=self.root.destroy).pack(side=tk.LEFT, padx=5)
+        Button(control_frame, text="Сгенерировать", command=self.generate_meander).pack(side=tk.LEFT, padx=5)
+        Button(control_frame, text="Завершить", command=self.exit).pack(side=tk.LEFT, padx=5)
+        Button(control_frame, text="Инверсия матрицы", command=self.invert_matrix).pack(side=tk.LEFT, padx=5)
+        canvas.update_idletasks()
+
+    def invert_matrix(self):
+        for i in range(self.size):
+            for j in range(i + 1, self.size):
+                self.toggle_cell(i, j)
+
+    def exit(self):
+        self.root.destroy()
+        sys.exit(0)
 
     def toggle_cell(self, i, j):
         self.matrix[i][j] = 1 - self.matrix[i][j]
         self.update_button_color(i, j)
 
-    def check_meander(self, meander):
-        n = len(meander)
-        all_meanders = functions.Meanders(n).get_all_meanders()
-        if meander not in all_meanders:
+    def check_meander(self, meander, out):
+        if self.meanders is None:
+            n = len(meander)
+            mndrs = functions.Meanders(n)
+            self.meanders = mndrs.get_all_meanders(mode=out)
+        if meander not in self.meanders:
             return False
         return True
+
+    def get_button_color(self, i, j):
+        color = 'black' if self.matrix[i][j] == 1 else 'white'
+        return color
 
     def update_button_color(self, i, j):
         color = 'black' if self.matrix[i][j] == 1 else 'white'
@@ -119,8 +151,9 @@ class MeanderApp:
 
     def generate_meander(self):
         meander = functions.matrix_to_meander(self.matrix)
+        # print(meander)
 
-        if not self.check_meander(meander):
+        if not self.check_meander(meander, ''):
             messagebox.showerror("Ошибка", "Это не меандр!")
             return
 
@@ -142,8 +175,8 @@ class MeanderApp:
         control_frame = tk.Frame(self.current_frame)
         control_frame.pack(pady=10)
 
-        tk.Button(control_frame, text="Продолжить", command=self.__start_app).pack(side=tk.LEFT, padx=5)
-        tk.Button(control_frame, text="Завершить", command=self.root.destroy).pack(side=tk.LEFT, padx=5)
+        Button(control_frame, text="Продолжить", command=self.create_matrix_grid).pack(side=tk.LEFT, padx=5)
+        Button(control_frame, text="Завершить", command=self.exit).pack(side=tk.LEFT, padx=5)
 
 
 if __name__ == "__main__":

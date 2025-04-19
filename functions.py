@@ -221,7 +221,7 @@ def matrix_to_meander(matrix):
             if not used[pos - 1]:
                 plus += 1
             pos += 1
-        while pos < n and used[pos - 1]:
+        while used[pos - 1]:
             pos += 1
 
         ans_meander[i] = pos
@@ -301,7 +301,6 @@ def print_meanders(combination):
     ax.spines['top'].set_color('none')
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    ax.set_ylim([-3, 3])
     ax.spines['bottom'].set_position(('data', 0))
     for i in range(len(combination) - 1):
         a = min(combination[i], combination[i + 1])

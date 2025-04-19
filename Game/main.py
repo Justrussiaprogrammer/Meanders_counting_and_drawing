@@ -106,11 +106,10 @@ class MeanderApp:
         self.matrix[i][j] = 1 - self.matrix[i][j]
         self.update_button_color(i, j)
 
-    def check_meander(self, meander, out):
+    def check_meander(self, meander):
         n = len(meander)
-        mndrs = functions.Meanders(n)
-        all_mndrs = mndrs.get_all_meanders(mode=out)
-        if meander not in all_mndrs:
+        all_meanders = functions.Meanders(n).get_all_meanders()
+        if meander not in all_meanders:
             return False
         return True
 
@@ -121,7 +120,7 @@ class MeanderApp:
     def generate_meander(self):
         meander = functions.matrix_to_meander(self.matrix)
 
-        if not self.check_meander(meander, ''):
+        if not self.check_meander(meander):
             messagebox.showerror("Ошибка", "Это не меандр!")
             return
 

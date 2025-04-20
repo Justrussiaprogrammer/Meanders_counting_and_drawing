@@ -13,8 +13,8 @@ if os.name == "posix":              # Для MacOs
     button_height = 30
 elif os.name == "nt":               # Для Windows
     from tkinter import Button
-    button_width = 3
-    button_height = 1
+    button_width = 10
+    button_height = 3
 else:
     print("Don't know the system")
     sys.exit(-1)
@@ -78,37 +78,37 @@ class MeanderApp:
         scrollbar.pack(side="right", fill="y")
 
         # Создание сетки кнопок
-        self.buttons = []
+        self.buttons = [[] for _ in range(self.size)]
         for i in range(self.size):
-            row_frame = tk.Frame(scrollable_frame)
-            row_frame.pack()
             row_buttons = []
-            for j in range(self.size):
-                if j > i:
-                    btn = Button(
-                        row_frame,
-                        width=button_width,
-                        height=button_height,
-                        bg=self.get_button_color(i, j),
-                        command=lambda x=i, y=j: self.toggle_cell(x, y)
-                    )
-                else:
-                    btn = Button(
-                        row_frame,
-                        width=button_width,
-                        height=button_height,
-                        bg=self.get_button_color(i, j),
-                        command=lambda x=i, y=j: self.toggle_cell(x, y),
-                        state='disabled'
-                    )
+            for j in range(i + 1, self.size):
+                btn = Button(
+                    scrollable_frame,
+                    width=button_width,
+                    height=button_height,
+                    bg=self.get_button_color(i, j),
+                    command=lambda x=i, y=j: self.toggle_cell(x, y)
+                )
+                # else:
+                #     btn = Button(
+                #         row_frame,
+                #         width=button_width,
+                #         height=button_height,
+                #         bg=self.get_button_color(i, j),
+                #         command=lambda x=i, y=j: self.toggle_cell(x, y),
+                #         state='disabled'
+                #     )
                 # if j == i + 1:
                 #     btn.grid(row=i, column=0, padx=(2 + button_width) * i)
                 # else:
                 #     btn.grid(row=i, column=0, padx=)
                 # btn.grid(row=i, column=0, padx=(2 + button_width) * i + j * button_width)
-                btn.grid(row=i, column=j, padx=2)
-                row_buttons.append(btn)
-            self.buttons.append(row_buttons)
+                column = j - 1  # Колонка внутри строки i
+                # Отступ слева для первой кнопки в строке
+                padx_left = i * button_width if column == i else 2
+                print(padx_left)
+                btn.grid(row=i, column=column, padx=(padx_left, 2), pady=2)
+                self.buttons[i].append(btn)
 
         # Панель управления
         control_frame = tk.Frame(self.current_frame)
@@ -146,8 +146,11 @@ class MeanderApp:
         return color
 
     def update_button_color(self, i, j):
+        # color = 'black' if self.matrix[i][j] == 1 else 'white'
+        # self.buttons[i][j].config(bg=color)
         color = 'black' if self.matrix[i][j] == 1 else 'white'
-        self.buttons[i][j].config(bg=color)
+        index = j - i - 1  # Индекс кнопки в списке self.buttons[i]
+        self.buttons[i][index].config(bg=color)
 
     def generate_meander(self):
         meander = functions.matrix_to_meander(self.matrix)

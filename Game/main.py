@@ -105,9 +105,9 @@ class MeanderApp:
                 # btn.grid(row=i, column=0, padx=(2 + button_width) * i + j * button_width)
                 column = j - 1  # Колонка внутри строки i
                 # Отступ слева для первой кнопки в строке
-                padx_left = i * button_width if column == i else 2
-                print(padx_left)
-                btn.grid(row=i, column=column, padx=(padx_left, 2), pady=2)
+                # padx_left = i * button_width if column == 0 else 2
+                # print(padx_left)
+                btn.grid(row=i, column=column, padx=button_width, pady=2)
                 self.buttons[i].append(btn)
 
         # Панель управления
@@ -179,6 +179,7 @@ class MeanderApp:
         control_frame.pack(pady=10)
 
         Button(control_frame, text="Продолжить", command=self.create_matrix_grid).pack(side=tk.LEFT, padx=5)
+        Button(control_frame, text="Начать сначала", command=self.__start_app).pack(side=tk.LEFT, padx=5)
         Button(control_frame, text="Завершить", command=self.exit).pack(side=tk.LEFT, padx=5)
 
 

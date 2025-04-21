@@ -49,7 +49,7 @@ class MeanderApp:
 
         self.size = size
         self.matrix = np.zeros((size, size), dtype=int)
-        self.meanders = None
+        self.meanders = functions.Meanders(size).get_all_meanders()
         self.create_matrix_grid()
 
     def create_matrix_grid(self):
@@ -107,7 +107,7 @@ class MeanderApp:
                 # Отступ слева для первой кнопки в строке
                 # padx_left = i * button_width if column == 0 else 2
                 # print(padx_left)
-                btn.grid(row=i, column=column, padx=button_width, pady=2)
+                btn.grid(row=i, column=column, pady=2)
                 self.buttons[i].append(btn)
 
         # Панель управления
@@ -132,11 +132,7 @@ class MeanderApp:
         self.matrix[i][j] = 1 - self.matrix[i][j]
         self.update_button_color(i, j)
 
-    def check_meander(self, meander, out):
-        if self.meanders is None:
-            n = len(meander)
-            mndrs = functions.Meanders(n)
-            self.meanders = mndrs.get_all_meanders(mode=out)
+    def check_meander(self, meander):
         if meander not in self.meanders:
             return False
         return True
@@ -156,7 +152,7 @@ class MeanderApp:
         meander = functions.matrix_to_meander(self.matrix)
         # print(meander)
 
-        if not self.check_meander(meander, ''):
+        if not self.check_meander(meander):
             messagebox.showerror("Ошибка", "Это не меандр!")
             return
 

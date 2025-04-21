@@ -61,7 +61,8 @@ class MeanderApp:
         container.pack(expand=True, fill=tk.BOTH)
 
         canvas = tk.Canvas(container)
-        scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollbar_vertical = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollbar_horizontal = tk.Scrollbar(container, orient=tk.HORIZONTAL, command=canvas.xview)
         scrollable_frame = tk.Frame(canvas)
 
         scrollable_frame.bind(
@@ -72,10 +73,11 @@ class MeanderApp:
         )
 
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.configure(xscrollcommand=scrollbar_horizontal.set, yscrollcommand=scrollbar_vertical.set)
 
+        scrollbar_vertical.pack(side="right", fill="y")
+        scrollbar_horizontal.pack(side="bottom", fill="x")
         canvas.pack(side="left", fill=tk.BOTH, expand=True)
-        scrollbar.pack(side="right", fill="y")
 
         # Создание сетки кнопок
         self.buttons = [[] for _ in range(self.size)]

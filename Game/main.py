@@ -49,7 +49,8 @@ class MeanderApp:
 
         self.size = size
         self.matrix = np.zeros((size, size), dtype=int)
-        self.meanders = None
+        mndrs = functions.Meanders(size)
+        self.meanders = mndrs.get_all_meanders(mode="")
         self.create_matrix_grid()
 
     def create_matrix_grid(self):
@@ -89,25 +90,8 @@ class MeanderApp:
                     bg=self.get_button_color(i, j),
                     command=lambda x=i, y=j: self.toggle_cell(x, y)
                 )
-                # else:
-                #     btn = Button(
-                #         row_frame,
-                #         width=button_width,
-                #         height=button_height,
-                #         bg=self.get_button_color(i, j),
-                #         command=lambda x=i, y=j: self.toggle_cell(x, y),
-                #         state='disabled'
-                #     )
-                # if j == i + 1:
-                #     btn.grid(row=i, column=0, padx=(2 + button_width) * i)
-                # else:
-                #     btn.grid(row=i, column=0, padx=)
-                # btn.grid(row=i, column=0, padx=(2 + button_width) * i + j * button_width)
-                column = j - 1  # Колонка внутри строки i
-                # Отступ слева для первой кнопки в строке
-                # padx_left = i * button_width if column == 0 else 2
-                # print(padx_left)
-                btn.grid(row=i, column=column, padx=button_width, pady=2)
+                column = j - 1
+                btn.grid(row=i, column=column)
                 self.buttons[i].append(btn)
 
         # Панель управления
@@ -133,10 +117,6 @@ class MeanderApp:
         self.update_button_color(i, j)
 
     def check_meander(self, meander, out):
-        if self.meanders is None:
-            n = len(meander)
-            mndrs = functions.Meanders(n)
-            self.meanders = mndrs.get_all_meanders(mode=out)
         if meander not in self.meanders:
             return False
         return True

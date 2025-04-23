@@ -1,6 +1,7 @@
 import yaml
+import sqlite3
 
-def __reboot():
+def __reboot(id):
     # fd = open('info.json')
     # data = json.load(fd)
     # fd.close()
@@ -8,16 +9,10 @@ def __reboot():
     # conf = yaml.safe_load(fd)
     # fd.close()
 
-    local_data = dict()
-    error_text = dict()
-    name_digit = dict()
-    name_digit["0"] = 0
-    name_digit["Добавить ошибку"] = -2
-    name_digit["Обновить описание"] = -1
-    digit_name = dict()
-    digit_name[0] = 0
-    digit_name[-2] = "Добавить ошибку"
-    digit_name[-1] = "Обновить описание"
-    errors_list = dict()
-
-    return local_data, error_text, name_digit, digit_name, errors_list
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE Users SET level = ? WHERE user_id = ?', (0, id))
+    cursor.execute('UPDATE Users SET search_error = ? WHERE user_id = ?', (0, id))
+    cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, id))
+    connection.commit()
+    connection.close()

@@ -7,6 +7,8 @@ from telebot import types
 import texts
 import yaml
 
+from functions import Meanders
+
 f = open("config.yaml", "r")
 conf = yaml.safe_load(f)
 f.close()
@@ -14,8 +16,10 @@ bot = telebot.TeleBot(conf["token"])
 
 @bot.message_handler(commands=['check'])
 def my_check(message):
-    all_meanders = functions.Meanders(10).get_all_meanders()
-
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (1, message.chat.id))
+    connection.commit()
     write_text(message.chat.id, lines.check_text)
 
 @bot.message_handler(commands=['help'])
@@ -27,17 +31,7 @@ def my_help(message):
 
 @bot.message_handler(commands=['reboot'])
 def my_reboot(message):
-    global data, local_data, error_text, name_digit, digit_name, errors_list
-
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    cursor.execute('UPDATE Users SET level = ? WHERE user_id = ?', (0, message.chat.id))
-    cursor.execute('UPDATE Users SET search_error = ? WHERE user_id = ?', (0, message.chat.id))
-    cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
-    connection.commit()
-    connection.close()
-
-    data, local_data, error_text, name_digit, digit_name, errors_list = bot_func.__reboot()
+    bot_func.__reboot(message.chat.id)
     write_text(message.chat.id, lines.reboot_text)
 
 @bot.message_handler(commands=['start'])
@@ -55,18 +49,52 @@ def my_start(message):
 
     connection.close()
     write_text(message.chat.id, lines.start_text)
-    my_reboot(message)
+
+    bot_func.__reboot(message.chat.id)
 
 
 def write_text(name_id, string):
-    # fd = open("log.txt", 'a')
-    # fd.write(string + '\n')
-    # fd.close()
+    fd = open("log.txt", 'a')
+    fd.write("name_id:" + str(name_id) + "; message: " + string + '\n')
+    fd.close()
     bot.send_message(name_id, string, reply_markup=types.ReplyKeyboardRemove())
+
+
+@bot.message_handler(content_types=['text'])
+def error_manager(message):
+    global conf
+
+    connection = sqlite3.connect('database.db')
+    try:
+        cursor = connection.cursor()
+        cursor.execute('SELECT level, search_error, action FROM Users WHERE user_id = ?', (message.chat.id,))
+        results = cursor.fetchall()[0]
+        rank = results[0]
+        search_error = int(results[1])
+        action = results[2]
+        match action:
+            case 0:
+                write_text(message.chat.id, lines.no_action_text)
+            case 1:
+                ints = [int(x) for x in message.text.split()]
+                meanders = Meanders(len(ints)).get_all_meanders()
+                cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
+                connection.commit()
+                if ints in meanders:
+                    write_text(message.chat.id, lines.meander_positive_text)
+                else:
+                    write_text(message.chat.id, lines.meander_negative_text)
+    except IndexError:
+        write_text(message.chat.id, lines.index_error_text)
+    except ValueError:
+        write_text(message.chat.id, lines.value_error_text)
+    except Exception:
+        write_text(message.chat.id, lines.fatal_text)
+    finally:
+        connection.close()
 
 
 if __name__ == '__main__':
     lines = texts.Texts()
-    data, local_data, error_text, name_digit, digit_name, errors_list = bot_func.__reboot()
 
     bot.polling(none_stop=True)

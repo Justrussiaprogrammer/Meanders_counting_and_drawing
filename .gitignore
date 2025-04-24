@@ -3,4 +3,4 @@
 __testing.py
 *.yaml
 *.db
-BotTG/log.txt
+*.txt

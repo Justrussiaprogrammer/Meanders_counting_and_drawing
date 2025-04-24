@@ -1,15 +1,18 @@
-import BotTG.bot_functions as bot_func
+import BotTG.functions_private as func_private
 import Meanders.functions_meanders as functions
+import texts
+
 import sqlite3
 import telebot
 from telebot import types
-import texts
 import yaml
+
 
 f = open("config.yaml", "r")
 conf = yaml.safe_load(f)
 f.close()
 bot = telebot.TeleBot(conf["token"])
+
 
 @bot.message_handler(commands=['check'])
 def my_check(message):
@@ -19,6 +22,7 @@ def my_check(message):
     connection.commit()
     write_text(message.chat.id, lines.check_text)
 
+
 @bot.message_handler(commands=['help'])
 def my_help(message):
     if message.chat.id in conf["admins"]:
@@ -26,10 +30,12 @@ def my_help(message):
     else:
         write_text(message.chat.id, lines.help_text)
 
+
 @bot.message_handler(commands=['reboot'])
 def my_reboot(message):
-    bot_func.__reboot(message.chat.id)
+    func_private.__reboot(message.chat.id)
     write_text(message.chat.id, lines.reboot_text)
+
 
 @bot.message_handler(commands=['start'])
 def my_start(message):
@@ -47,7 +53,7 @@ def my_start(message):
     connection.close()
     write_text(message.chat.id, lines.start_text)
 
-    bot_func.__reboot(message.chat.id)
+    func_private.__reboot(message.chat.id)
 
 
 def write_text(name_id, string):

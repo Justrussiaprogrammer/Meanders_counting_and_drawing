@@ -1,5 +1,5 @@
 import BotTG.bot_functions as bot_func
-import functions
+from Meanders import functions
 import sqlite3
 import telebot
 from telebot import types
@@ -74,7 +74,7 @@ def error_manager(message):
                 write_text(message.chat.id, lines.no_action_text)
             case 1:
                 ints = [int(x) for x in message.text.split()]
-                flag = functions.check_meander(ints)
+                flag = functions.Meanders(len(ints)).is_meander(ints)
                 if flag:
                     write_text(message.chat.id, lines.meander_positive_text)
                 else:

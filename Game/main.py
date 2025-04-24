@@ -1,4 +1,4 @@
-import functions
+from Meanders import functions
 
 import tkinter as tk
 from tkinter import simpledialog, messagebox
@@ -49,7 +49,7 @@ class MeanderApp:
 
         self.size = size
         self.matrix = np.zeros((size, size), dtype=int)
-        self.meanders = functions.Meanders(size).get_all_meanders()
+        self.meanders = functions.Meanders(size)
         self.create_matrix_grid()
 
     def create_matrix_grid(self):
@@ -149,7 +149,7 @@ class MeanderApp:
         meander = functions.matrix_to_meander(self.matrix)
         # print(meander)
 
-        if not functions.check_meander(meander):
+        if not self.meanders.is_meander(meander):
             messagebox.showerror("Ошибка", "Это не меандр!")
             return
 

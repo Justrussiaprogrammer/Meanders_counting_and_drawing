@@ -1,4 +1,5 @@
 from Meanders import functions
+import Meanders.functions_draw as func_draw
 
 import tkinter as tk
 from tkinter import simpledialog, messagebox
@@ -161,7 +162,7 @@ class MeanderApp:
         self.current_frame.pack()
 
         # Создание графика
-        fig = functions.print_meanders(meander)
+        fig = func_draw.print_meanders(meander)
 
         canvas = FigureCanvasTkAgg(fig, master=self.current_frame)
         canvas.draw()

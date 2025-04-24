@@ -134,11 +134,6 @@ class MeanderApp:
         self.matrix[i][j] = 1 - self.matrix[i][j]
         self.update_button_color(i, j)
 
-    def check_meander(self, meander):
-        if meander not in self.meanders:
-            return False
-        return True
-
     def get_button_color(self, i, j):
         color = 'black' if self.matrix[i][j] == 1 else 'white'
         return color
@@ -154,7 +149,7 @@ class MeanderApp:
         meander = functions.matrix_to_meander(self.matrix)
         # print(meander)
 
-        if not self.check_meander(meander):
+        if not functions.check_meander(meander):
             messagebox.showerror("Ошибка", "Это не меандр!")
             return
 

@@ -1,13 +1,10 @@
 import BotTG.bot_functions as bot_func
-import os
+import functions
 import sqlite3
-import subprocess
 import telebot
 from telebot import types
 import texts
 import yaml
-
-from functions import Meanders
 
 f = open("config.yaml", "r")
 conf = yaml.safe_load(f)
@@ -77,27 +74,14 @@ def error_manager(message):
                 write_text(message.chat.id, lines.no_action_text)
             case 1:
                 ints = [int(x) for x in message.text.split()]
-                n = len(ints)
-
-                data, temp = os.pipe()
-                os.write(temp, bytes(str(n) + "\n", "utf-8"))
-                os.close(temp)
-                subprocess.check_output(
-                    "./get_all_meanders", stdin=data, shell=True)
-
-                fd = open("meanders.txt", 'r')
-                info = fd.readlines()
-                fd.close()
-                meanders = list()
-                for line in info:
-                    meanders.append([int(x) for x in line.split()])
-
-                cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
-                connection.commit()
-                if ints in meanders:
+                flag = functions.check_meander(ints)
+                if flag:
                     write_text(message.chat.id, lines.meander_positive_text)
                 else:
                     write_text(message.chat.id, lines.meander_negative_text)
+
+                cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
+                connection.commit()
     except IndexError:
         write_text(message.chat.id, lines.index_error_text)
     except ValueError:

@@ -1,6 +1,8 @@
-import time
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+import subprocess
+import time
 
 
 class Meanders:
@@ -84,6 +86,25 @@ def check_noted(pos, visited, neighs):
             if union.bit_count() % 2 == 0:
                 return False
     return True
+
+
+def check_meander(digits):
+    n = len(digits)
+
+    data, temp = os.pipe()
+    os.write(temp, bytes(str(n) + "\n", "utf-8"))
+    os.close(temp)
+    subprocess.check_output(
+        "./get_all_meanders", stdin=data, shell=True)
+
+    fd = open("meanders.txt", 'r')
+    info = fd.readlines()
+    fd.close()
+    for line in info:
+        if digits == [int(x) for x in line.split()]:
+            return True
+
+    return False
 
 
 def find_max(start, finish, mass):

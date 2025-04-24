@@ -1,4 +1,4 @@
-from Meanders import functions
+import Meanders.functions_meanders as functions
 import Meanders.functions_draw as func_draw
 
 import tkinter as tk

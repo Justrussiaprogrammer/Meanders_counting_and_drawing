@@ -1,5 +1,5 @@
 import BotTG.bot_functions as bot_func
-from Meanders import functions
+import Meanders.functions_meanders as functions
 import sqlite3
 import telebot
 from telebot import types

@@ -1,7 +1,7 @@
-import json
-import functions
 import BotTG.bot_functions as bot_func
+import os
 import sqlite3
+import subprocess
 import telebot
 from telebot import types
 import texts
@@ -77,7 +77,21 @@ def error_manager(message):
                 write_text(message.chat.id, lines.no_action_text)
             case 1:
                 ints = [int(x) for x in message.text.split()]
-                meanders = Meanders(len(ints)).get_all_meanders()
+                n = len(ints)
+
+                data, temp = os.pipe()
+                os.write(temp, bytes(str(n) + "\n", "utf-8"))
+                os.close(temp)
+                subprocess.check_output(
+                    "./get_all_meanders", stdin=data, shell=True)
+
+                fd = open("meanders.txt", 'r')
+                info = fd.readlines()
+                fd.close()
+                meanders = list()
+                for line in info:
+                    meanders.append([int(x) for x in line.split()])
+
                 cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
                 connection.commit()
                 if ints in meanders:

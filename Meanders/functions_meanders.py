@@ -13,17 +13,25 @@ class Meanders:
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         start_time = time.time()
 
-        data, temp = os.pipe()
-        os.write(temp, bytes(str(n) + "\n", "utf-8"))
-        os.close(temp)
-        subprocess.check_output(
-            "../get_all_meanders", stdin=data, shell=True)
+        file_path = f'meanders_list/meanders{self.n}.txt'
+        if os.path.exists(file_path):
+            fd = open(file_path, 'r')
+            info = fd.readlines()
+            fd.close()
+            for line in info:
+                self.all_meanders.append([int(x) for x in line.split()])
+        else:
+            data, temp = os.pipe()
+            os.write(temp, bytes(str(n) + "\n", "utf-8"))
+            os.close(temp)
+            subprocess.check_output(
+                "../get_all_meanders", stdin=data, shell=True)
 
-        fd = open("meanders.txt", 'r')
-        info = fd.readlines()
-        fd.close()
-        for line in info:
-            self.all_meanders.append([int(x) for x in line.split()])
+            fd = open(f"meanders.txt", 'r')
+            info = fd.readlines()
+            fd.close()
+            for line in info:
+                self.all_meanders.append([int(x) for x in line.split()])
 
         self.speed = time.time() - start_time
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")

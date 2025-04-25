@@ -7,11 +7,15 @@ import telebot
 from telebot import types
 import yaml
 
-
 f = open("config.yaml", "r")
 conf = yaml.safe_load(f)
 f.close()
 bot = telebot.TeleBot(conf["token"])
+
+
+@bot.message_handler(commands=['admin'])
+def my_admin(message):
+    write_text(message.chat.id, lines.reboot_text)
 
 
 @bot.message_handler(commands=['check'])
@@ -26,7 +30,7 @@ def my_check(message):
 @bot.message_handler(commands=['help'])
 def my_help(message):
     if message.chat.id in conf["admins"]:
-        write_text(message.chat.id, lines.help_admin_text)
+        write_text(message.chat.id, lines.help_text_admin)
     else:
         write_text(message.chat.id, lines.help_text)
 
@@ -51,22 +55,33 @@ def my_start(message):
         print("The end of registration")
 
     connection.close()
-    write_text(message.chat.id, lines.start_text)
+
+    if message.chat.id == conf["owner"]:
+        write_text(message.chat.id, lines.start_text_admin)
+    elif message.chat.id in conf["admins"]:
+        write_text(message.chat.id, lines.start_text_admin)
+    else:
+        write_text(message.chat.id, lines.start_text)
+
 
     func_private.__reboot(message.chat.id)
 
 
-def write_text(name_id, string):
+def write_text(name_id, string, user=True):
     fd = open("log.txt", 'a')
-    fd.write("name_id:" + str(name_id) + "; message: " + string + '\n')
+    if user:
+        fd.write(f"name_id: {name_id}; answer: {string}\n")
+        bot.send_message(name_id, string, reply_markup=types.ReplyKeyboardRemove())
+    else:
+        fd.write(f"name_id: {name_id}; request: {string}\n")
     fd.close()
-    bot.send_message(name_id, string, reply_markup=types.ReplyKeyboardRemove())
 
 
 @bot.message_handler(content_types=['text'])
 def error_manager(message):
     global conf
 
+    write_text(message.chat.id, message.text, user=False)
     connection = sqlite3.connect('database.db')
     try:
         cursor = connection.cursor()

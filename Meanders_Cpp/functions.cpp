@@ -8,7 +8,7 @@ Meanders::Meanders(const int m) {
     std::vector<bool> is_visited(n_ + 1);
     std::set<int> set_visited;
     std::vector<std::bitset<32>> neighs(n_ + 1);
-    std::vector<int> future_meander(n_ + 1);
+    std::vector<int> future_meander(n_);
     auto start_point = std::chrono::system_clock::now();
     __go_deep_to_build(1, is_visited, set_visited, neighs, future_meander, 0);
     speed_ = std::chrono::system_clock::now() - start_point;

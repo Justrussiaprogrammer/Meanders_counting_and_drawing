@@ -1,4 +1,5 @@
-import functions
+import Meanders.functions_meanders as functions
+import Meanders.functions_draw as func_draw
 
 import tkinter as tk
 from tkinter import simpledialog, messagebox
@@ -49,7 +50,7 @@ class MeanderApp:
 
         self.size = size
         self.matrix = np.zeros((size, size), dtype=int)
-        self.meanders = functions.Meanders(size).get_all_meanders()
+        self.meanders = functions.Meanders(size)
         self.create_matrix_grid()
 
     def create_matrix_grid(self):
@@ -134,11 +135,6 @@ class MeanderApp:
         self.matrix[i][j] = 1 - self.matrix[i][j]
         self.update_button_color(i, j)
 
-    def check_meander(self, meander):
-        if meander not in self.meanders:
-            return False
-        return True
-
     def get_button_color(self, i, j):
         color = 'black' if self.matrix[i][j] == 1 else 'white'
         return color
@@ -154,7 +150,7 @@ class MeanderApp:
         meander = functions.matrix_to_meander(self.matrix)
         # print(meander)
 
-        if not self.check_meander(meander):
+        if not self.meanders.is_meander(meander):
             messagebox.showerror("Ошибка", "Это не меандр!")
             return
 
@@ -166,7 +162,7 @@ class MeanderApp:
         self.current_frame.pack()
 
         # Создание графика
-        fig = functions.print_meanders(meander)
+        fig = func_draw.print_meanders(meander)
 
         canvas = FigureCanvasTkAgg(fig, master=self.current_frame)
         canvas.draw()

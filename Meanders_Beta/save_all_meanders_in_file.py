@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
+import Meanders_Beta.all_functions as mb_func
 import networkx as nx
-import functions
 import os
 
 
 n = int(input('Задайте размер поиска меандров:\n'))
 m = input('Введите любой символ для вывода меандров, и нажмите Enter чтобы получить просто количество:\n')
-mndrs = functions.Meanders(n)
+mndrs = mb_func.Meanders(n)
 all_mndrs = mndrs.get_all_meanders(m)
 mndrs.get_meanders_info()
 

@@ -1,4 +1,6 @@
 .DS_Store
 .idea
 __testing.py
-config.yaml
+*.yaml
+*.db
+*.txt

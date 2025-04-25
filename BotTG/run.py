@@ -7,6 +7,7 @@ import telebot
 from telebot import types
 import yaml
 
+
 f = open("config.yaml", "r")
 conf = yaml.safe_load(f)
 f.close()
@@ -33,6 +34,13 @@ def my_help(message):
         write_text(message.chat.id, lines.help_text_admin)
     else:
         write_text(message.chat.id, lines.help_text)
+
+
+@bot.message_handler(commands=['get_game'])
+def my_get_game(message):
+    fd_for_out = open("../game.zip", "rb")
+    bot.send_document(message.chat.id, fd_for_out)
+    fd_for_out.close()
 
 
 @bot.message_handler(commands=['reboot'])

@@ -1,5 +1,43 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from tkinter import Tk, Canvas
+from PIL import Image, ImageDraw
+import Meanders.functions_meanders as func_meanders
+
+
+def get_wb_matrix(meander, current_height=800, current_width=800, size=40, filename="drawing_wb_matrix.png",
+                  out_file=True):
+    image = None
+    draw = None
+    root = None
+    my_canvas = None
+    n = len(meander)
+    if out_file:
+        image = Image.new("RGB", (current_height, current_height), (255, 255, 255))
+        draw = ImageDraw.Draw(image)
+    else:
+        root = Tk()
+        my_canvas = Canvas(root, bg="white", height=current_height, width=current_width)
+        my_canvas.pack()
+
+    start = current_height // 2 - n // 2 * size
+    matrix = func_meanders.meander_to_matrix(meander)
+    colors = {0: "white", 1: "black"}
+    for i in range(n):
+        for j in range(i):
+            pos_x = start + i * size
+            pos_y = start + j * size
+            if out_file:
+                draw.rectangle((pos_x, pos_y, pos_x + size, pos_y + size), fill=colors[matrix[i][j] % 2],
+                               outline=colors[1 - matrix[i][j] % 2])
+            else:
+                my_canvas.create_rectangle(pos_x, pos_y, pos_x + size, pos_y + size, fill=colors[matrix[i][j] % 2],
+                                           outline=colors[1 - matrix[i][j] % 2])
+
+    if out_file:
+        image.save(filename)
+    else:
+        root.mainloop()
 
 
 def print_meanders(combination):

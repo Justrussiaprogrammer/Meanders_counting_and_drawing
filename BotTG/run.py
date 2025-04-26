@@ -1,5 +1,6 @@
 import BotTG.functions_private as func_private
-import Meanders.functions_meanders as functions
+import Meanders.functions_meanders as func_meanders
+import Meanders.functions_draw as func_draw
 import texts
 
 import sqlite3
@@ -75,6 +76,15 @@ def my_start(message):
     func_private.__reboot(message.chat.id)
 
 
+@bot.message_handler(commands=['wb_matrix'])
+def my_wb_matrix(message):
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (2, message.chat.id))
+    connection.commit()
+    write_text(message.chat.id, lines.wb_matrix_text)
+
+
 def write_text(name_id, string, user=True):
     fd = open("log.txt", 'a')
     if user:
@@ -103,9 +113,22 @@ def error_manager(message):
                 write_text(message.chat.id, lines.no_action_text)
             case 1:
                 ints = [int(x) for x in message.text.split()]
-                flag = functions.Meanders(len(ints)).is_meander(ints)
+                flag = func_meanders.Meanders(len(ints)).is_meander(ints)
                 if flag:
                     write_text(message.chat.id, lines.meander_positive_text)
+                else:
+                    write_text(message.chat.id, lines.meander_negative_text)
+
+                cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
+                connection.commit()
+            case 2:
+                ints = [int(x) for x in message.text.split()]
+                flag = func_meanders.Meanders(len(ints)).is_meander(ints)
+                if flag:
+                    func_draw.get_wb_matrix(ints)
+                    fd_for_out = open("drawing_wb_matrix.png", "rb")
+                    bot.send_document(message.chat.id, fd_for_out)
+                    fd_for_out.close()
                 else:
                     write_text(message.chat.id, lines.meander_negative_text)
 

@@ -86,3 +86,18 @@ def matrix_to_meander(matrix):
             cur_min_free += 1
 
     return ans_meander
+
+
+def meander_to_matrix(meander):
+    n = len(meander)
+    matrix = list()
+    for i in range(n):
+        matrix.append([0] * n)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if meander[i] > meander[j]:
+                matrix[i][j] = 1
+                matrix[j][i] = 1
+
+    return matrix

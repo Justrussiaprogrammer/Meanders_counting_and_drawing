@@ -27,11 +27,17 @@ class Meanders:
             subprocess.check_output(
                 "../get_all_meanders", stdin=data, shell=True)
 
-            fd = open(f"meanders.txt", 'r')
-            info = fd.readlines()
-            fd.close()
-            for line in info:
-                self.all_meanders.append([int(x) for x in line.split()])
+            if os.path.exists("meanders.txt"):
+                fd = open("meanders.txt", 'r')
+                info = fd.readlines()
+                fd.close()
+                if not os.path.isdir("meanders_list"):
+                    os.mkdir("meanders_list")
+                os.rename("meanders.txt", f"meanders{self.n}.txt")
+                os.replace(f"meanders{self.n}.txt", f"meanders_list/meanders{self.n}.txt")
+
+                for line in info:
+                    self.all_meanders.append([int(x) for x in line.split()])
 
         self.speed = time.time() - start_time
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")

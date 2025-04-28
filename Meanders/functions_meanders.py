@@ -13,17 +13,31 @@ class Meanders:
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         start_time = time.time()
 
-        data, temp = os.pipe()
-        os.write(temp, bytes(str(n) + "\n", "utf-8"))
-        os.close(temp)
-        subprocess.check_output(
-            "../get_all_meanders", stdin=data, shell=True)
+        file_path = f'meanders_list/meanders{self.n}.txt'
+        if os.path.exists(file_path):
+            fd = open(file_path, 'r')
+            info = fd.readlines()
+            fd.close()
+            for line in info:
+                self.all_meanders.append([int(x) for x in line.split()])
+        else:
+            data, temp = os.pipe()
+            os.write(temp, bytes(str(n) + "\n", "utf-8"))
+            os.close(temp)
+            subprocess.check_output(
+                "../get_all_meanders", stdin=data, shell=True)
 
-        fd = open("meanders.txt", 'r')
-        info = fd.readlines()
-        fd.close()
-        for line in info:
-            self.all_meanders.append([int(x) for x in line.split()])
+            if os.path.exists("meanders.txt"):
+                fd = open("meanders.txt", 'r')
+                info = fd.readlines()
+                fd.close()
+                if not os.path.isdir("meanders_list"):
+                    os.mkdir("meanders_list")
+                os.rename("meanders.txt", f"meanders{self.n}.txt")
+                os.replace(f"meanders{self.n}.txt", f"meanders_list/meanders{self.n}.txt")
+
+                for line in info:
+                    self.all_meanders.append([int(x) for x in line.split()])
 
         self.speed = time.time() - start_time
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
@@ -78,3 +92,18 @@ def matrix_to_meander(matrix):
             cur_min_free += 1
 
     return ans_meander
+
+
+def meander_to_matrix(meander):
+    n = len(meander)
+    matrix = list()
+    for i in range(n):
+        matrix.append([0] * n)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if meander[i] > meander[j]:
+                matrix[i][j] = 1
+                matrix[j][i] = 1
+
+    return matrix

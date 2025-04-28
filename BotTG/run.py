@@ -1,5 +1,6 @@
 import BotTG.functions_private as func_private
-import Meanders.functions_meanders as functions
+import Meanders.functions_meanders as func_meanders
+import Meanders.functions_draw as func_draw
 import texts
 
 import sqlite3
@@ -14,6 +15,11 @@ f.close()
 bot = telebot.TeleBot(conf["token"])
 
 
+@bot.message_handler(commands=['admin'])
+def my_admin(message):
+    write_text(message.chat.id, lines.reboot_text)
+
+
 @bot.message_handler(commands=['check'])
 def my_check(message):
     connection = sqlite3.connect('database.db')
@@ -26,9 +32,16 @@ def my_check(message):
 @bot.message_handler(commands=['help'])
 def my_help(message):
     if message.chat.id in conf["admins"]:
-        write_text(message.chat.id, lines.help_admin_text)
+        write_text(message.chat.id, lines.help_text_admin)
     else:
         write_text(message.chat.id, lines.help_text)
+
+
+@bot.message_handler(commands=['get_game'])
+def my_get_game(message):
+    fd_for_out = open("../game.zip", "rb")
+    bot.send_document(message.chat.id, fd_for_out)
+    fd_for_out.close()
 
 
 @bot.message_handler(commands=['reboot'])
@@ -51,22 +64,42 @@ def my_start(message):
         print("The end of registration")
 
     connection.close()
-    write_text(message.chat.id, lines.start_text)
+
+    if message.chat.id == conf["owner"]:
+        write_text(message.chat.id, lines.start_text_admin)
+    elif message.chat.id in conf["admins"]:
+        write_text(message.chat.id, lines.start_text_admin)
+    else:
+        write_text(message.chat.id, lines.start_text)
+
 
     func_private.__reboot(message.chat.id)
 
 
-def write_text(name_id, string):
+@bot.message_handler(commands=['wb_matrix'])
+def my_wb_matrix(message):
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (2, message.chat.id))
+    connection.commit()
+    write_text(message.chat.id, lines.wb_matrix_text)
+
+
+def write_text(name_id, string, user=True):
     fd = open("log.txt", 'a')
-    fd.write("name_id:" + str(name_id) + "; message: " + string + '\n')
+    if user:
+        fd.write(f"name_id: {name_id}; answer: {string}\n")
+        bot.send_message(name_id, string, reply_markup=types.ReplyKeyboardRemove())
+    else:
+        fd.write(f"name_id: {name_id}; request: {string}\n")
     fd.close()
-    bot.send_message(name_id, string, reply_markup=types.ReplyKeyboardRemove())
 
 
 @bot.message_handler(content_types=['text'])
 def error_manager(message):
     global conf
 
+    write_text(message.chat.id, message.text, user=False)
     connection = sqlite3.connect('database.db')
     try:
         cursor = connection.cursor()
@@ -80,9 +113,22 @@ def error_manager(message):
                 write_text(message.chat.id, lines.no_action_text)
             case 1:
                 ints = [int(x) for x in message.text.split()]
-                flag = functions.Meanders(len(ints)).is_meander(ints)
+                flag = func_meanders.Meanders(len(ints)).is_meander(ints)
                 if flag:
                     write_text(message.chat.id, lines.meander_positive_text)
+                else:
+                    write_text(message.chat.id, lines.meander_negative_text)
+
+                cursor.execute('UPDATE Users SET action = ? WHERE user_id = ?', (0, message.chat.id))
+                connection.commit()
+            case 2:
+                ints = [int(x) for x in message.text.split()]
+                flag = func_meanders.Meanders(len(ints)).is_meander(ints)
+                if flag:
+                    func_draw.get_wb_matrix(ints)
+                    fd_for_out = open("drawing_wb_matrix.png", "rb")
+                    bot.send_document(message.chat.id, fd_for_out)
+                    fd_for_out.close()
                 else:
                     write_text(message.chat.id, lines.meander_negative_text)
 

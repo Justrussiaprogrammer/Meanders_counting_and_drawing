@@ -19,4 +19,4 @@ for line in arr:
 print('/' * 100)
 
 if input_type == 'f':
-    f.close()
+    sys.stdout.close()

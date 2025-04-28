@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from tkinter import Tk, Canvas
+from PIL import Image, ImageDraw
 
 
 class Meanders:
@@ -278,6 +280,7 @@ def get_good_compositions(meander):
                     print('')
                     count_of_pairs += 1
 
+
 def is_meander(letters, out):
     meander = list()
 
@@ -309,3 +312,32 @@ def print_meanders(combination):
         plt.plot(x, ((((b - a)/2)**2 - (x - (a + b)/2)**2)**(1/2)) * cnt, color='g')
         cnt *= -1
     return fig
+
+
+def get_wb_matrix(meander, current_height=800, current_width=800, size=40, filename="drawing_wb_matrix.png",
+                  out_file=True):
+    root = Tk()
+    C = Canvas(root, bg="white", height=current_height, width=current_width)
+    C.pack()
+
+    image = Image.new("RGB", (current_height, current_height), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
+    n = len(meander)
+
+    start = current_height // 2 - n // 2 * size
+    matrix = meander_to_matrix(meander)
+    for i in range(n):
+        for j in range(i):
+            pos_x = start + i * size
+            pos_y = start + j * size
+            if matrix[i][j] == 1:
+                C.create_rectangle(pos_x, pos_y, pos_x + size, pos_y + size, fill="black")
+                draw.rectangle((pos_x, pos_y, pos_x + size, pos_y + size), fill="black")
+            else:
+                C.create_rectangle(pos_x, pos_y, pos_x + size, pos_y + size, fill="white", outline="black")
+                draw.rectangle((pos_x, pos_y, pos_x + size, pos_y + size), fill="white", outline="black")
+
+    if out_file:
+        image.save(filename)
+    else:
+        root.mainloop()

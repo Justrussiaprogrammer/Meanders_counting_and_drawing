@@ -74,6 +74,9 @@ class Meanders:
         print("Для числа", self.n, string_for_meanders1, answer, string_for_meanders2)
         print("Всего прошло:", self.speed)
 
+    def speed(self):
+        return self.speed
+
 
 def check_noted(pos, visited, neighs):
     for x in visited:

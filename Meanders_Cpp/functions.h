@@ -81,11 +81,13 @@ class Meanders {
         }
 
     public:
-        Meanders(int m);
+        Meanders(const int m);
+        Meanders(const int m, bool flag);
 
         std::vector<std::vector<int>> get_all_meanders();
         void get_meanders_info();
         void print_meanders();
+        double speed();
 
         void head(size_t m=10) {
             for (int i = 0; i < std::min(all_meanders_.size(), m); ++i) {

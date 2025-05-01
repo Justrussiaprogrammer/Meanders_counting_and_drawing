@@ -17,6 +17,17 @@ Meanders::Meanders(const int m) {
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 }
 
+Meanders::Meanders(const int m, bool flag) {
+    n_ = m;
+    std::vector<bool> is_visited(n_ + 1);
+    std::set<int> set_visited;
+    std::vector<std::bitset<32>> neighs(n_ + 1);
+    std::vector<int> future_meander(n_);
+    auto start_point = std::chrono::system_clock::now();
+    __go_deep_to_build(1, is_visited, set_visited, neighs, future_meander, 0);
+    speed_ = std::chrono::system_clock::now() - start_point;
+}
+
 std::vector<std::vector<int>> Meanders::get_all_meanders() {
     return all_meanders_;
 }
@@ -40,4 +51,8 @@ void Meanders::print_meanders() {
     for (std::vector<int> meander : all_meanders_) {
         std::cout << meander << std::endl;
     }
+}
+
+double Meanders::speed() {
+    return std::chrono::duration<double>(speed_).count();
 }

@@ -7,10 +7,12 @@ class Meanders:
     def __init__(self, n):
         self.all_meanders = list()
         self.n = n
+        self.speed = 0
 
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        print("- Подождите, идет инициализация класса меандров -")
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    def __init_list(self):
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print("- Подождите, идет инициализация всех меандров -")
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         start_time = time.time()
 
         file_path = f'meanders_list/meanders{self.n}.txt'
@@ -22,7 +24,7 @@ class Meanders:
                 self.all_meanders.append([int(x) for x in line.split()])
         else:
             data, temp = os.pipe()
-            os.write(temp, bytes(str(n) + "\n", "utf-8"))
+            os.write(temp, bytes(str(self.n) + "\n", "utf-8"))
             os.close(temp)
             subprocess.check_output(
                 "../get_all_meanders", stdin=data, shell=True)
@@ -41,13 +43,17 @@ class Meanders:
 
         self.speed = time.time() - start_time
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-        print("- Инициализация класса завершена -")
+        print("- Полная инициализация завершена -")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
     def get_all_meanders(self):
+        if len(self.all_meanders) == 0:
+            self.__init_list()
         return self.all_meanders
 
     def get_meanders_info(self):
+        if len(self.all_meanders) == 0:
+            self.__init_list()
         answer = len(self.all_meanders)
         string_for_meanders1 = "найден"
         string_for_meanders2 = "меандр"
@@ -61,9 +67,41 @@ class Meanders:
         print("Всего прошло:", self.speed)
 
     def is_meander(self, digits):
-        if digits in self.all_meanders:
+        if len(self.all_meanders) == 0:
+            n = len(digits)
+            if n != self.n:
+                return False
+            visited = [False] * (n + 1)
+            set_visited = set([])
+            neighs = [0] * (n + 1)
+            for digit in digits:
+                if not visited[digit]:
+                    for j in range(digit + 1, self.n + 1):
+                        if visited[j] == 0:
+                            neighs[digit] += 2 ** j
+                            neighs[j] += 2 ** digit
+                    if not check_noted(digit, set_visited, neighs):
+                        return False
+                    visited[digit] = True
+                    set_visited.add(digit)
             return True
-        return False
+        else:
+            if digits in self.all_meanders:
+                return True
+            return False
+
+
+def check_noted(pos, visited, neighs):
+    for x in visited:
+        if (2 ** x) & neighs[pos] == 2 ** x:
+            union = neighs[pos] & neighs[x]
+            if union.bit_count() % 2 == 1:
+                return False
+        else:
+            union = neighs[pos] & neighs[x]
+            if union.bit_count() % 2 == 0:
+                return False
+    return True
 
 
 def matrix_to_meander(matrix):
